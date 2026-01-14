@@ -1,0 +1,144 @@
+/* * BENCHIFY - GLOBAL STYLES
+ * Fuente: Inter (Google Fonts)
+ * Framework: Tailwind CSS (Utility classes) + Custom Overrides
+ */
+
+/* =========================================
+   1. CONFIGURACIÓN BASE Y FUENTES
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #16a34a; /* Tailwind Green-600 */
+    --primary-hover: #15803d; /* Tailwind Green-700 */
+    --text-dark: #111827;
+    --text-light: #6b7280;
+    --romantic-overlay: rgba(0, 0, 0, 0.4); /* Oscurecimiento para textos sobre fotos */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f9fafb; /* Gray-50 */
+    color: var(--text-dark);
+    overflow-x: hidden; /* Evita scroll horizontal indeseado en móviles */
+}
+
+/* =========================================
+   2. COMPONENTES DE MAPA (CRUCIAL PARA LA APP)
+   ========================================= */
+
+/* * El contenedor del mapa necesita una altura explícita para renderizarse.
+ * Esto es obligatorio para Google Maps o Leaflet.
+ */
+#map-container, #map {
+    width: 100%;
+    height: 100%;
+    min-height: 500px; /* Altura mínima para asegurar visibilidad */
+    border-radius: 0.75rem; /* Rounded-xl */
+    z-index: 1;
+}
+
+/* Ajustes para los popups (globos) del mapa */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+}
+
+.leaflet-popup-content h3 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* =========================================
+   3. ESTILOS DE HERO (PANTALLA PRINCIPAL)
+   ========================================= */
+
+/* * Clase para la imagen de fondo principal.
+ * Reemplaza el estilo inline del index.html para mantener el código limpio.
+ */
+.hero-bg {
+    background-image: linear-gradient(var(--romantic-overlay), var(--romantic-overlay)), 
+                      url('https://images.unsplash.com/photo-1552055653-5d55b394101e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Efecto Parallax "Romántico" */
+    height: 100vh; /* Ocupa toda la pantalla */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================
+   4. TARJETAS DE BANCOS (BENCH CARDS)
+   ========================================= */
+
+.bench-card {
+    transition: all 0.3s ease-in-out;
+    border: 1px solid transparent;
+}
+
+.bench-card:hover {
+    transform: translateY(-5px); /* Pequeña elevación al pasar el mouse */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: #d1fae5; /* Green-100 */
+}
+
+/* Icono de favoritos (corazón) animado */
+.fav-icon {
+    transition: color 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.fav-icon:hover {
+    color: #ef4444; /* Red-500 */
+    transform: scale(1.1);
+}
+
+.fav-icon.active {
+    color: #ef4444;
+}
+
+/* =========================================
+   5. FORMULARIOS Y BUSCADOR
+   ========================================= */
+
+.search-input:focus {
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.3); /* Anillo verde suave al escribir */
+    border-color: var(--primary-color);
+}
+
+/* =========================================
+   6. ANIMACIONES Y UTILIDADES
+   ========================================= */
+
+/* Animación suave de entrada (Fade In) para que la web no cargue "de golpe" */
+.fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar personalizado (estilo moderno) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* Slate-300 */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color); 
+}

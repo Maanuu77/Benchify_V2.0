@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Bancos - Benchify</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* Ajuste específico para que el mapa llene la pantalla restando el header */
+        #map {
+            height: calc(100vh - 64px); 
+            width: 100%;
+        }
+        .filter-sidebar {
+            height: calc(100vh - 64px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 overflow-hidden">
+
+    <nav class="bg-white shadow-sm h-16 flex items-center px-6 relative z-[1000]">
+        <div class="flex justify-between w-full items-center">
+            <a href="../index.html" class="flex items-center gap-2">
+                <i class="fa-solid fa-map-location-dot text-green-600 text-2xl"></i>
+                <span class="font-bold text-xl tracking-tight">BENCHIFY</span>
+            </a>
+            <div class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
+                <a href="../index.html" class="hover:text-green-600">Inicio</a>
+                <a href="#" class="text-green-600 border-b-2 border-green-600">Mapa Explorador</a>
+                <a href="profile.html" class="hover:text-green-600">Mis Favoritos</a>
+            </div>
+            <button class="bg-gray-100 p-2 rounded-full hover:bg-gray-200">
+                <i class="fa-solid fa-user"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex flex-col md:flex-row">
+        
+        <aside class="filter-sidebar w-full md:w-80 bg-white shadow-lg z-[999] overflow-y-auto p-6">
+            <h2 class="text-xl font-bold mb-6">Filtrar Bancos</h2>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Ubicación</label>
+                <div class="relative">
+                    <input type="text" placeholder="Ej: Retiro, Madrid..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition">
+                    <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="flex justify-between text-xs font-semibold text-gray-500 uppercase mb-2">
+                        <span>Calidad de Vistas</span>
+                        <span class="text-green-600">Min. 3★</span>
+                    </label>
+                    <input type="range" min="1" max="5" step="1" class="w-full accent-green-600">
+                    <div class="flex justify-between text-[10px] text-gray-400 px-1 mt-1">
+                        <span>Pobres</span>
+                        <span>Épicas</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Nivel de Privacidad</label>
+                    <select class="w-full p-2 border rounded-lg text-sm bg-gray-50 outline-none">
+                        <option>Cualquiera</option>
+                        <option>Muy Privado (Poca gente)</option>
+                        <option>Concurrido (Ambiente social)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Ideal para...</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full border border-green-200 hover:bg-green-600 hover:text-white transition">🌅 Atardecer</button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full border hover:border-green-500 transition">🍷 Picnic</button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full border hover:border-green-500 transition">💍 Pedida</button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full border hover:border-green-500 transition">📖 Lectura</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="w-full mt-10 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition">
+                Aplicar Filtros
+            </button>
+        </aside>
+
+        <section class="flex-grow relative">
+            <div id="map"></div>
+            
+            <button class="absolute bottom-8 right-8 z-[1000] bg-white text-gray-800 p-4 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 transition active:scale-95 border-2 border-green-500">
+                <i class="fa-solid fa-plus text-green-600 text-xl"></i>
+                <span class="font-bold pr-2">Añadir Banco</span>
+            </button>
+        </section>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="../js/maps.js"></script>
+
+</body>
+</html>
