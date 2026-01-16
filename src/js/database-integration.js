@@ -18,11 +18,11 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase (descomenta cuando tengas credenciales)
-// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-// import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-// 
-// const app = initializeApp(firebaseConfig);
-// const db = getFirestore(app);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ============================================
 // 2. OBTENER BANCOS DESDE FIRESTORE
@@ -35,12 +35,12 @@ const firebaseConfig = {
 async function loadBenchesFromDatabase() {
     try {
         // Descomentar cuando uses Firebase:
-        // const querySnapshot = await getDocs(collection(db, "benches"));
-        // const benches = [];
-        // querySnapshot.forEach((doc) => {
-        //     benches.push({ id: doc.id, ...doc.data() });
-        // });
-        // return benches;
+        const querySnapshot = await getDocs(collection(db, "benches"));
+        const benches = [];
+        querySnapshot.forEach((doc) => {
+        benches.push({ id: doc.id, ...doc.data() });
+        });
+        return benches;
         
         // Por ahora, retorna los datos locales
         return benchesData;
@@ -62,8 +62,8 @@ async function loadBenchesFromDatabase() {
 async function createNewBench(benchData) {
     try {
         // Descomentar cuando uses Firebase:
-        // const docRef = await addDoc(collection(db, "benches"), benchData);
-        // return docRef.id;
+        const docRef = await addDoc(collection(db, "benches"), benchData);
+        return docRef.id;
         
         // Por ahora, simula la creación local
         console.log("Nuevo banco creado:", benchData);
@@ -86,7 +86,7 @@ async function createNewBench(benchData) {
 async function updateBench(benchId, updates) {
     try {
         // Descomentar cuando uses Firebase:
-        // await updateDoc(doc(db, "benches", benchId), updates);
+        await updateDoc(doc(db, "benches", benchId), updates);
         
         console.log("Banco actualizado:", benchId, updates);
     } catch (error) {
@@ -106,7 +106,7 @@ async function updateBench(benchId, updates) {
 async function deleteBench(benchId) {
     try {
         // Descomentar cuando uses Firebase:
-        // await deleteDoc(doc(db, "benches", benchId));
+        await deleteDoc(doc(db, "benches", benchId));
         
         console.log("Banco eliminado:", benchId);
     } catch (error) {
@@ -127,10 +127,10 @@ async function deleteBench(benchId) {
 async function getBenchById(benchId) {
     try {
         // Descomentar cuando uses Firebase:
-        // const docSnap = await getDoc(doc(db, "benches", benchId));
-        // if (docSnap.exists()) {
-        //     return { id: docSnap.id, ...docSnap.data() };
-        // }
+        const docSnap = await getDoc(doc(db, "benches", benchId));
+        if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+        }
         
         return null;
     } catch (error) {
@@ -191,13 +191,13 @@ async function searchBenches(filters) {
 async function addReview(benchId, review) {
     try {
         // Descomentar cuando uses Firebase:
-        // const reviewsRef = collection(db, "benches", benchId, "reviews");
-        // await addDoc(reviewsRef, {
-        //     author: review.author,
-        //     rating: review.rating,
-        //     text: review.text,
-        //     timestamp: new Date()
-        // });
+        const reviewsRef = collection(db, "benches", benchId, "reviews");
+        await addDoc(reviewsRef, {
+        author: review.author,
+        rating: review.rating,
+        text: review.text,
+        timestamp: new Date()
+         });
         
         console.log("Reseña añadida:", review);
     } catch (error) {
@@ -214,13 +214,13 @@ async function addReview(benchId, review) {
 async function getReviews(benchId) {
     try {
         // Descomentar cuando uses Firebase:
-        // const reviewsRef = collection(db, "benches", benchId, "reviews");
-        // const querySnapshot = await getDocs(reviewsRef);
-        // const reviews = [];
-        // querySnapshot.forEach((doc) => {
-        //     reviews.push({ id: doc.id, ...doc.data() });
-        // });
-        // return reviews;
+        const reviewsRef = collection(db, "benches", benchId, "reviews");
+        const querySnapshot = await getDocs(reviewsRef);
+        const reviews = [];
+        querySnapshot.forEach((doc) => {
+        reviews.push({ id: doc.id, ...doc.data() });
+        });
+        return reviews;
         
         return [];
     } catch (error) {
@@ -241,9 +241,9 @@ async function getReviews(benchId) {
 async function addToFavorites(userId, benchId) {
     try {
         // Descomentar cuando uses Firebase:
-        // await updateDoc(doc(db, "users", userId), {
-        //     favorites: arrayUnion(benchId)
-        // });
+        await updateDoc(doc(db, "users", userId), {
+        favorites: arrayUnion(benchId)
+        });
         
         localStorage.setItem(`fav_${benchId}`, 'true');
         console.log("Banco añadido a favoritos");
@@ -260,13 +260,13 @@ async function addToFavorites(userId, benchId) {
 async function getFavorites(userId) {
     try {
         // Descomentar cuando uses Firebase:
-        // const userDoc = await getDoc(doc(db, "users", userId));
-        // return userDoc.data()?.favorites || [];
+        const userDoc = await getDoc(doc(db, "users", userId));
+        return userDoc.data()?.favorites || [];
         
         // Por ahora, usa localStorage
-        return Object.keys(localStorage)
-            .filter(key => key.startsWith('fav_'))
-            .map(key => key.replace('fav_', ''));
+        //return Object.keys(localStorage)
+        //   .filter(key => key.startsWith('fav_'))
+        //    .map(key => key.replace('fav_', ''));
     } catch (error) {
         console.error("Error al obtener favoritos:", error);
         return [];
