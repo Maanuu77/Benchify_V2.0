@@ -4,124 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Banco - Benchify</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/bench-card.css">
 </head>
 <body class="bg-gray-50">
 
-    <nav class="bg-white shadow-sm p-4 flex justify-between items-center">
-        <a href="map.html" class="text-green-600 flex items-center gap-2">
-            <i class="fa-solid fa-arrow-left"></i> Volver al Mapa
-        </a>
-        <div class="flex gap-4">
-            <button class="text-gray-400 hover:text-red-500 transition"><i class="fa-regular fa-heart text-xl"></i></button>
-            <button class="text-gray-400 hover:text-blue-500 transition"><i class="fa-solid fa-share-nodes text-xl"></i></button>
+    <!-- NAVEGACIÓN -->
+    <nav class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
+            <a href="map.html" class="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition">
+                <i class="fas fa-arrow-left"></i> Volver al Mapa
+            </a>
+            <div class="flex gap-6">
+                <button class="text-gray-400 hover:text-red-500 transition text-xl" title="Añadir a favoritos">
+                    <i class="far fa-heart"></i>
+                </button>
+                <button class="text-gray-400 hover:text-blue-500 transition text-xl" title="Compartir">
+                    <i class="fas fa-share-nodes"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 md:py-8">
-        <section class="rounded-3xl overflow-hidden shadow-xl mb-8 bg-gray-200 aspect-video relative">
-            <img src="https://images.unsplash.com/photo-1562590206-8d59103e0413?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" 
-                 alt="Banco" class="w-full h-full object-cover">
-            <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                <i class="fa-solid fa-camera mr-1"></i> 1/4 Fotos
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- Imagen Hero -->
+        <div class="hero-image h-96 mb-12">
+            <img 
+                src="https://images.unsplash.com/photo-1562590206-8d59103e0413?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80" 
+                alt="Banco del Retiro"
+            >
+            <div class="photo-counter">
+                <i class="fas fa-camera mr-2"></i> 1/4 Fotos
             </div>
-        </section>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="md:col-span-2">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Banquito del Atardecer</h1>
-                <p class="text-gray-500 flex items-center gap-2 mb-6">
-                    <i class="fa-solid fa-location-dot text-green-600"></i> 
-                    Parque del Retiro, Madrid (Junto al estanque)
+        <!-- Contenido en Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Columna Izquierda (2/3) -->
+            <div class="lg:col-span-2">
+                
+                <!-- Título y Ubicación -->
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Banco Central Park</h1>
+                <p class="text-gray-600 flex items-center gap-2 mb-6 text-lg">
+                    <i class="fas fa-map-pin text-green-600"></i>
+                    Centro, Ciudad (Junto al lago)
                 </p>
 
+                <!-- Tags -->
                 <div class="flex flex-wrap gap-2 mb-8">
-                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Perfecto para pedida</span>
-                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Mejor Atardecer</span>
-                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Ideal para picnic</span>
+                    <span class="tag tag-green">🌳 Naturaleza</span>
+                    <span class="tag tag-yellow">🌅 Atardecer</span>
+                    <span class="tag tag-blue">📸 Fotografías</span>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border mb-8">
-                    <h2 class="text-lg font-bold mb-4">Descripción</h2>
-                    <p class="text-gray-600 leading-relaxed">
-                        Este banco es famoso entre los locales por su orientación perfecta hacia el oeste. 
-                        Es un asiento de madera clásico, bien conservado, situado bajo un sauce que ofrece 
-                        la sombra justa. Ideal para parejas que buscan una conversación tranquila.
+                <!-- Descripción -->
+                <div class="description-box">
+                    <h2>Descripción</h2>
+                    <p>
+                        Este banco es famoso entre los locales por su ubicación perfecta con vistas al agua. 
+                        Es un asiento de madera clásico, bien conservado, situado bajo la sombra de árboles grandes 
+                        que ofrecen protección solar. Ideal para parejas que buscan una conversación tranquila y romántica. 
+                        El lugar es particularmente hermoso al atardecer.
                     </p>
                 </div>
 
-                <section>
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold">Reseñas de la Comunidad</h2>
-                        <button class="text-green-600 font-semibold text-sm">+ Añadir Reseña</button>
+                <!-- Sección de Reseñas -->
+                <section class="review-section">
+                    <div class="review-header">
+                        <h2>💬 Reseñas de la Comunidad</h2>
+                        <button class="add-review-btn">+ Añadir Reseña</button>
                     </div>
-                    
-                    <div class="bg-white p-4 rounded-xl shadow-sm border mb-4">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center font-bold text-green-700">MM</div>
-                            <div>
-                                <p class="text-sm font-bold">Manuel Martínez</p>
-                                <p class="text-[10px] text-gray-400">Hace 2 días</p>
+
+                    <!-- Reseña 1 -->
+                    <div class="review-card">
+                        <div class="review-author">
+                            <div class="avatar">MM</div>
+                            <div class="author-info">
+                                <p>Manuel Martínez</p>
+                                <p>Hace 2 días</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600">"Increíble lugar. Fuimos al atardecer y las vistas no decepcionan. Un poco de gente pasando cerca, pero vale la pena."</p>
+                        <p class="review-text">
+                            "Increíble lugar. Fuimos al atardecer y las vistas no decepcionan. Un poco de gente pasando cerca, 
+                            pero vale la pena. Perfecto para una cena de picnic."
+                        </p>
+                    </div>
+
+                    <!-- Reseña 2 -->
+                    <div class="review-card">
+                        <div class="review-author">
+                            <div class="avatar" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">SL</div>
+                            <div class="author-info">
+                                <p>Sandra López</p>
+                                <p>Hace 1 semana</p>
+                            </div>
+                        </div>
+                        <p class="review-text">
+                            "Me encanta este lugar. Muy tranquilo por las mañanas. Lo único negativo es que podría tener 
+                            un poco más de mantenimiento, pero es hermoso."
+                        </p>
                     </div>
                 </section>
             </div>
 
+            <!-- Columna Derecha (1/3) -->
             <aside class="space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-green-500">
-                    <h3 class="font-bold text-gray-900 mb-6 text-center text-lg">Benchmarking Social</h3>
-                    
-                    <div class="mb-4">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-600"><i class="fa-solid fa-eye mr-2"></i>Vistas</span>
-                            <span class="font-bold">4.8/5</span>
+                
+                <!-- Benchmark Card -->
+                <div class="benchmark-card">
+                    <h3 class="benchmark-title">⭐ Benchmarking</h3>
+
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">
+                            <span><i class="fas fa-eye mr-2"></i> Vistas</span>
+                            <span>4.8/5</span>
                         </div>
-                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-yellow-400 h-full" style="width: 96%"></div>
+                        <div class="benchmark-bar">
+                            <div class="benchmark-fill fill-yellow" style="width: 96%"></div>
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-600"><i class="fa-solid fa-user-shield mr-2"></i>Privacidad</span>
-                            <span class="font-bold">3.2/5</span>
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">
+                            <span><i class="fas fa-shield-halved mr-2"></i> Privacidad</span>
+                            <span>3.2/5</span>
                         </div>
-                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-green-500 h-full" style="width: 64%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-600"><i class="fa-solid fa-couch mr-2"></i>Comodidad</span>
-                            <span class="font-bold">4.0/5</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-blue-500 h-full" style="width: 80%"></div>
+                        <div class="benchmark-bar">
+                            <div class="benchmark-fill fill-green" style="width: 64%"></div>
                         </div>
                     </div>
 
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=40.4183,-3.6826" target="_blank"
-                       class="block w-full bg-gray-900 text-white text-center py-3 rounded-xl font-bold hover:bg-black transition mb-3">
-                        <i class="fa-solid fa-route mr-2"></i> Cómo llegar
-                    </a>
-                </div>
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">
+                            <span><i class="fas fa-couch mr-2"></i> Comodidad</span>
+                            <span>4.0/5</span>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="benchmark-fill fill-blue" style="width: 80%"></div>
+                        </div>
+                    </div>
 
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <p class="text-[10px] uppercase font-bold text-blue-400 mb-2">Datos para Ayuntamientos</p>
-                    <p class="text-xs text-blue-800">Este banco tiene alta demanda los fines de semana. Requiere revisión de pintura.</p>
+                    <div class="benchmark-item">
+                        <div class="benchmark-label">
+                            <span><i class="fas fa-leaf mr-2"></i> Atmósfera</span>
+                            <span>4.5/5</span>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="benchmark-fill fill-green" style="width: 90%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="action-buttons">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=40.4183,-3.6826" 
+                           target="_blank" 
+                           class="action-btn btn-primary">
+                            <i class="fas fa-route mr-2"></i> Cómo llegar
+                        </a>
+                    </div>
+
+                    <!-- Info para Ayuntamientos -->
+                    <div class="info-box">
+                        <p class="info-label"><i class="fas fa-building mr-2"></i> Datos para Ayuntamientos</p>
+                        <p class="info-text">
+                            Este banco tiene alta demanda los fines de semana. Requiere revisión de pintura 
+                            en los apoyabrazos. Propietario: Junta Municipal Centro.
+                        </p>
+                    </div>
                 </div>
             </aside>
         </div>
     </main>
 
-    <footer class="py-10 text-center text-gray-400 text-sm">
-        Benchify © 2024 - Ingeniería para momentos mágicos.
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-400 py-12 mt-16">
+        <div class="max-w-6xl mx-auto px-4 text-center text-sm">
+            <p>Benchify © 2024 - Ingeniería para momentos mágicos.</p>
+        </div>
     </footer>
 
-</body>
 </html>

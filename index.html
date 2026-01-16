@@ -11,118 +11,160 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="src/assets/css/styles.css">
+    <link rel="stylesheet" href="src/assets/css/index.css">
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
 
-    <nav class="bg-white shadow-md fixed w-full z-50">
+    <nav class="bg-white shadow-md fixed w-full z-50 top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <i class="fa-solid fa-map-location-dot text-green-600 text-2xl"></i>
-                    <span class="font-bold text-xl tracking-tight text-gray-900">BENCHIFY</span> </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#" class="text-green-600 font-semibold hover:text-green-700">Inicio</a>
-                    <a href="src/pages/map.html" class="text-gray-500 hover:text-green-600 transition">Mapa Interactivo</a> <a href="profile.html" class="text-gray-500 hover:text-green-600 transition">Mis Favoritos</a> <a href="b2b-stats.html" class="text-gray-500 hover:text-green-600 transition">Ayuntamientos</a> </div>
-                <div>
-                    <button id="loginBtn" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition shadow-lg">
-                        Iniciar Sesión
-                    </button> </div>
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='/'">
+                    <i class="fas fa-park text-2xl" style="color: #16a34a;"></i>
+                    <span class="text-xl font-bold" style="color: #111827;">Benchify</span>
+                </div>
+                
+                <div class="hidden md:flex gap-8 items-center">
+                    <a href="#features" class="text-gray-600 hover:text-green-600 font-medium transition">Características</a>
+                    <a href="#benches" class="text-gray-600 hover:text-green-600 font-medium transition">Bancos</a>
+                    <a href="src/pages/map.html" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition shadow-md">Explorar Mapa</a>
+                </div>
+
+                <button class="md:hidden text-gray-600 hover:text-green-600 text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </nav>
 
-    <header class="hero-bg">
+    <section class="hero-bg">
         <div class="hero-content">
             <h1 class="hero-title">
-                Find Your View, <br> Find Your Bench
+                Encuentra tus bancos favoritos
+                <br>
+                Dondequiera que estés
             </h1>
+            
             <p class="hero-subtitle">
-                El Google Maps de las citas románticas y vistas panorámicas.
+                La plataforma definitiva para descubrir, compartir y disfrutar de los bancos más acogedores de tu ciudad
             </p>
+            
             <div class="hero-search">
-                <input type="text" placeholder="¿Dónde quieres sentarte hoy? (Ej: El Retiro)">
-                <button>
-                    <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Busca bancos, ubicaciones o características..." id="heroSearch">
+                <button type="button" onclick="searchBench()">
+                    <i class="fas fa-search"></i>
                 </button>
             </div>
         </div>
-    </header>
+    </section>
 
-    <section class="features-section">
+    <section id="features" class="features-section">
         <div class="features-container">
-            <h2 class="section-title">Benchmarking Social</h2>
+            <h2 class="section-title">¿Por qué Benchify?</h2>
+            
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-camera-retro"></i></div>
-                    <h3>Vistas Épicas</h3>
-                    <p>Calificadas de 1 a 5 estrellas. Encuentra el mejor atardecer.</p>
+                    <div class="feature-icon">
+                        <i class="fas fa-map-pin"></i>
+                    </div>
+                    <h3>Ubicación Precisa</h3>
+                    <p>Localiza los bancos más cercanos a ti con nuestro mapa interactivo en tiempo real</p>
                 </div>
+
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-user-secret"></i></div>
-                    <h3>Privacidad</h3>
-                    <p>Desde lugares concurridos hasta rincones secretos para esa conversación especial.</p>
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Calificaciones Reales</h3>
+                    <p>Lee opiniones y calificaciones de otros usuarios para tomar las mejores decisiones</p>
                 </div>
+
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-couch"></i></div>
-                    <h3>Comodidad</h3>
-                    <p>Valoración ergonómica y estética. ¿Ideal para picnic o lectura?</p>
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Tus Favoritos</h3>
+                    <p>Guarda tus bancos favoritos y crea listas personalizadas para cada ocasión</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="benches-section">
+    <section id="benches" class="benches-section">
         <div class="benches-container">
-            <h2 class="section-title">Bancos Mejor Valorados</h2>
+            <h2 class="section-title">Bancos Destacados</h2>
+            
             <div class="benches-grid">
-                
                 <div class="bench-card">
                     <div class="bench-card-image">
-                        <img src="https://images.unsplash.com/photo-1562590206-8d59103e0413?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Banco Retiro">
-                        <span class="bench-card-rating">
-                            <i class="fa-solid fa-star text-yellow-400"></i> 4.8
-                        </span>
+                        <img src="https://images.unsplash.com/photo-1511531142514-b4b00a1b9d00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Banco Central Park">
+                        <div class="bench-card-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.8</span>
+                        </div>
                     </div>
                     <div class="bench-card-content">
-                        <h3 class="bench-card-title">Banquito del Atardecer</h3>
-                        <p class="bench-card-location"><i class="fa-solid fa-location-dot"></i> Parque del Retiro, Madrid</p>
-                        
-                        <div class="bench-card-tags">
-                            <span class="tag tag-green">Romántico</span>
-                            <span class="tag tag-blue">Vistas</span>
+                        <h3 class="bench-card-title">Banco Central Park</h3>
+                        <div class="bench-card-location">
+                            <i class="fas fa-map-pin"></i>
+                            <span>Centro, Ciudad</span>
                         </div>
-                        
+                        <div class="bench-card-tags">
+                            <span class="tag tag-green">Sombra</span>
+                            <span class="tag tag-blue">Cerca agua</span>
+                        </div>
                         <button class="bench-card-button">Ver Detalles</button>
                     </div>
                 </div>
 
                 <div class="bench-card">
                     <div class="bench-card-image">
-                        <img src="https://images.unsplash.com/photo-1555529733-146e499d3d3c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Banco Ciudad">
-                        <span class="bench-card-rating">
-                            <i class="fa-solid fa-star text-yellow-400"></i> 4.5
-                        </span>
+                        <img src="https://images.unsplash.com/photo-1502184612684-87efbd9451b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Banco Riverside">
+                        <div class="bench-card-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.6</span>
+                        </div>
                     </div>
                     <div class="bench-card-content">
-                        <h3 class="bench-card-title">Mirador de los Austrias</h3>
-                        <p class="bench-card-location"><i class="fa-solid fa-location-dot"></i> La Latina, Madrid</p>
-                        
-                        <div class="bench-card-tags">
-                            <span class="tag tag-purple">Privacidad</span>
-                            <span class="tag tag-yellow">Lectura</span>
+                        <h3 class="bench-card-title">Banco Riverside</h3>
+                        <div class="bench-card-location">
+                            <i class="fas fa-map-pin"></i>
+                            <span>Orilla del Río, Ciudad</span>
                         </div>
-                        
+                        <div class="bench-card-tags">
+                            <span class="tag tag-purple">Vistas</span>
+                            <span class="tag tag-yellow">Tranquilo</span>
+                        </div>
                         <button class="bench-card-button">Ver Detalles</button>
                     </div>
                 </div>
 
+                <div class="bench-card">
+                    <div class="bench-card-image">
+                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Banco del Parque Botánico">
+                        <div class="bench-card-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.9</span>
+                        </div>
+                    </div>
+                    <div class="bench-card-content">
+                        <h3 class="bench-card-title">Banco Botánico</h3>
+                        <div class="bench-card-location">
+                            <i class="fas fa-map-pin"></i>
+                            <span>Parque Botánico, Ciudad</span>
+                        </div>
+                        <div class="bench-card-tags">
+                            <span class="tag tag-green">Naturaleza</span>
+                            <span class="tag tag-blue">Fotografías</span>
+                        </div>
+                        <button class="bench-card-button">Ver Detalles</button>
+                    </div>
+                </div>
             </div>
             
             <div class="benches-footer">
                 <a href="src/pages/map.html" class="explore-button">
-                    Explorar el Mapa Completo
+                    <i class="fas fa-map"></i> Explorar Todos los Bancos
                 </a>
             </div>
         </div>
@@ -131,27 +173,37 @@
     <footer>
         <div class="footer-content">
             <div class="footer-header">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <span>BENCHIFY</span>
+                <i class="fas fa-park"></i>
+                <span>Benchify</span>
             </div>
+            
             <p class="footer-text">
-                © 2024 Benchify. Todos los derechos reservados. <br>
-                Hecho con <i class="fa-solid fa-heart footer-heart"></i> para los amantes de las vistas.
+                Hecho con <span class="footer-heart"><i class="fas fa-heart"></i></span> para los amantes de los bancos públicos
             </p>
+            
             <div class="footer-links">
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
             </div>
         </div>
     </footer>
 
-    <script src="js/auth.js"></script>
-    <script src="js/maps.js"></script> 
+    <script src="src/js/auth.js"></script>
+    <script src="src/js/database.js"></script>
     <script>
-        // Script simple para interactividad básica del botón Login
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            alert('Funcionalidad de Auth con Firebase pendiente de configurar en js/auth.js');
+        function searchBench() {
+            const searchTerm = document.getElementById('heroSearch').value;
+            if (searchTerm.trim()) {
+                window.location.href = `src/pages/map.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+
+        document.getElementById('heroSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBench();
+            }
         });
     </script>
 </body>
