@@ -4,118 +4,636 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Añadir Nuevo Banco - Benchify</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/add-bench.css">
+    
+    <!-- Leaflet para el mapa -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <style>
+        #locationMap { 
+            height: 300px; 
+            border-radius: 10px; 
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e5e7eb;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen pb-10">
+<body class="bg-gray-50 min-h-screen pb-12">
 
-    <nav class="bg-white shadow-sm p-4 mb-6">
-        <div class="max-w-2xl mx-auto flex justify-between items-center">
-            <a href="map.html" class="text-green-600 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-chevron-left"></i> Cancelar
+    <!-- NAVEGACIÓN -->
+    <nav>
+        <div class="container">
+            <a href="map.html">
+                <i class="fas fa-chevron-left"></i> Cancelar
             </a>
-            <h1 class="text-lg font-bold text-gray-800">Registrar Banco</h1>
-            <div class="w-10"></div> </div>
+            <h1>Registrar Nuevo Banco</h1>
+            <div style="width: 80px;"></div>
+        </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-4">
-        <form id="addBenchForm" class="space-y-8 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <form id="addBenchForm" class="space-y-6">
             
-            <section class="space-y-4">
-                <h2 class="text-sm font-black uppercase text-gray-400 tracking-widest">Información Básica</h2>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del lugar</label>
-                    <input type="text" id="benchName" required placeholder="Ej: El rincón de los suspiros" 
-                           class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción corta</label>
-                    <textarea id="benchDesc" rows="2" placeholder="Cuéntanos por qué es especial este banco..." 
-                              class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"></textarea>
-                </div>
-            </section>
-
-            <section class="space-y-6">
-                <h2 class="text-sm font-black uppercase text-gray-400 tracking-widest">Valoración (1 a 5 estrellas)</h2>
+            <!-- Sección 0: PREGUNTAS INICIALES PARA UBICACIÓN -->
+            <div class="form-section" style="background: linear-gradient(135deg, #dbeafe 0%, #cffafe 100%); border: 2px solid #0284c7;">
+                <h2 style="color: #0c4a6e;">📍 Primero, cuéntanos dónde está el banco</h2>
+                <p style="color: #0f766e; font-size: 0.9rem; margin-bottom: 1rem;">Esto nos ayudará a centrar el mapa en la zona correcta</p>
                 
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <label class="text-sm font-bold text-gray-700">Calidad de Vistas</label>
-                        <span id="val-vistas" class="text-green-600 font-bold">3</span>
-                    </div>
-                    <input type="range" id="vistas" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                <div class="form-group">
+                    <label for="ciudad">Ciudad/Municipio <span style="color: #ef4444;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="ciudad" 
+                        name="ciudad"
+                        placeholder="Ej: Madrid, Barcelona, Valencia..."
+                        autocomplete="off"
+                    >
+                    <div id="ciudadSuggestions" style="margin-top: 0.5rem; display: none; background: white; border: 1px solid #e5e7eb; border-radius: 6px; max-height: 200px; overflow-y: auto; z-index: 100;"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <label class="text-sm font-bold text-gray-700">Nivel de Privacidad</label>
-                        <span id="val-privacidad" class="text-green-600 font-bold">3</span>
-                    </div>
-                    <input type="range" id="privacidad" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                <div class="form-group">
+                    <label for="barrio">Barrio/Zona <span style="color: #ef4444;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="barrio" 
+                        name="barrio"
+                        placeholder="Ej: Centro, Retiro, Chueca..."
+                    >
                 </div>
 
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <label class="text-sm font-bold text-gray-700">Comodidad / Diseño</label>
-                        <span id="val-comodidad" class="text-green-600 font-bold">3</span>
-                    </div>
-                    <input type="range" id="comodidad" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                <div class="form-group">
+                    <label for="tipoZona">Tipo de Zona <span style="color: #ef4444;">*</span></label>
+                    <select id="tipoZona" name="tipoZona" required>
+                        <option value="">-- Selecciona un tipo --</option>
+                        <option value="parque">🌳 Parque Público</option>
+                        <option value="playa">🏖️ Playa/Paseo Marítimo</option>
+                        <option value="montaña">⛰️ Montaña/Senderismo</option>
+                        <option value="urbano">🏙️ Centro Urbano</option>
+                        <option value="arboledas">🌲 Zona Arbolada/Paseo</option>
+                        <option value="riverside">🏞️ Río/Ribera</option>
+                        <option value="otro">❓ Otro</option>
+                    </select>
                 </div>
-            </section>
 
-            <section class="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-200 text-center">
-                <i class="fa-solid fa-location-crosshairs text-green-500 text-2xl mb-2"></i>
-                <p class="text-xs text-gray-500">Se detectará tu ubicación actual automáticamente al guardar</p>
-                <input type="hidden" id="lat" value="40.4167"> <input type="hidden" id="lng" value="-3.7037">
-            </section>
+                <button type="button" id="btnBuscarUbicacion" style="background: #0284c7; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-search"></i> Buscar y Centrar Mapa
+                </button>
+            </div>
+            
+            <!-- Sección 1: Información Básica -->
+            <div class="form-section">
+                <h2>📍 Información Básica</h2>
+                
+                <div class="form-group">
+                    <label for="benchName">Nombre del Lugar <span style="color: #ef4444;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="benchName" 
+                        name="benchName"
+                        required 
+                        placeholder="Ej: El rincón de los suspiros"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="benchDesc">Descripción Breve</label>
+                    <textarea 
+                        id="benchDesc" 
+                        name="benchDesc"
+                        rows="3" 
+                        placeholder="Cuéntanos por qué es especial este banco, qué lo hace único..."
+                    ></textarea>
+                </div>
+            </div>
 
-            <button type="submit" id="saveBtn" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-green-700 shadow-xl shadow-green-100 transition flex items-center justify-center gap-3">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Banco
+            <!-- Sección 1.5: Foto Opcional -->
+            <div class="form-section">
+                <h2>📸 Foto del Banco (Opcional)</h2>
+                
+                <div class="form-group">
+                    <label for="benchPhoto">Sube una imagen (JPG, PNG, WebP - máx. 5MB)</label>
+                    <input 
+                        type="file" 
+                        id="benchPhoto" 
+                        name="benchPhoto"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                    >
+                    
+                    <!-- Vista previa de la foto -->
+                    <div id="photoPreview" class="photo-preview-container" style="display: none;">
+                        <img id="previewImage" src="" alt="Preview">
+                        <button type="button" id="removePhotoBtn" class="remove-photo-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div id="photoError" class="form-error" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Valoración -->
+            <div class="form-section">
+                <h2>⭐ Valoración (1 a 5 estrellas) <span style="color: #ef4444;">*</span></h2>
+                
+                <div class="form-group">
+                    <div class="slider-group">
+                        <label for="vistas">Calidad de Vistas</label>
+                        <input type="range" id="vistas" name="vistas" min="1" max="5" value="3" class="slider-input">
+                        <div class="rating-display">
+                            <span class="rating-stars" id="stars-vistas">★★★☆☆</span>
+                            <span class="rating-number" id="val-vistas">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-group">
+                        <label for="privacidad">Nivel de Privacidad</label>
+                        <input type="range" id="privacidad" name="privacidad" min="1" max="5" value="3" class="slider-input">
+                        <div class="rating-display">
+                            <span class="rating-stars" id="stars-privacidad">★★★☆☆</span>
+                            <span class="rating-number" id="val-privacidad">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-group">
+                        <label for="comodidad">Comodidad / Diseño</label>
+                        <input type="range" id="comodidad" name="comodidad" min="1" max="5" value="3" class="slider-input">
+                        <div class="rating-display">
+                            <span class="rating-stars" id="stars-comodidad">★★★☆☆</span>
+                            <span class="rating-number" id="val-comodidad">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-group">
+                        <label for="atmosfera">Atmósfera</label>
+                        <input type="range" id="atmosfera" name="atmosfera" min="1" max="5" value="3" class="slider-input">
+                        <div class="rating-display">
+                            <span class="rating-stars" id="stars-atmosfera">★★★☆☆</span>
+                            <span class="rating-number" id="val-atmosfera">3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Ubicación -->
+            <div class="form-section">
+                <h2>📍 Ubicación <span style="color: #ef4444;">*</span></h2>
+                
+                <div class="form-group">
+                    <label>Haz clic en el mapa para seleccionar la ubicación</label>
+                    <div id="locationMap"></div>
+                    <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.75rem;">
+                        <i class="fas fa-map-marker-alt" style="color: #16a34a;"></i> 
+                        Coordenadas: <strong id="coordsDisplay">40.4167, -3.7037</strong>
+                    </p>
+                </div>
+                
+                <input type="hidden" id="lat" name="lat" value="40.4167">
+                <input type="hidden" id="lng" name="lng" value="-3.7037">
+            </div>
+
+            <!-- Sección 4: Botón Submit -->
+            <button type="submit" id="saveBtn" class="submit-btn">
+                <i class="fas fa-cloud-arrow-up"></i> Publicar Banco
             </button>
         </form>
     </main>
 
-    <script type="module">
-        import { saveBench } from '../src/js/database.js';
+    <!-- SCRIPTS -->
+    <!-- Primero cargamos Leaflet ANTES del módulo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <script>
+        // Variables globales accesibles
+        let selectedPhotoFile = null;
+        let map = null;
+        let marker = null;
 
-        // Actualizar los números de los sliders visualmente
-        const sliders = ['vistas', 'privacidad', 'comodidad'];
-        sliders.forEach(id => {
-            const el = document.getElementById(id);
-            el.addEventListener('input', (e) => {
-                document.getElementById(`val-${id}`).innerText = e.target.value;
+        // BASE DE DATOS DE CIUDADES Y COORDENADAS
+        const UBICACIONES_ESP = {
+            'madrid': { lat: 40.4168, lng: -3.7038, zoom: 13, nombre: 'Madrid' },
+            'barcelona': { lat: 41.3874, lng: 2.1686, zoom: 13, nombre: 'Barcelona' },
+            'valencia': { lat: 39.4699, lng: -0.3763, zoom: 13, nombre: 'Valencia' },
+            'sevilla': { lat: 37.3886, lng: -5.9823, zoom: 13, nombre: 'Sevilla' },
+            'bilbao': { lat: 43.2633, lng: -2.9349, zoom: 13, nombre: 'Bilbao' },
+            'malaga': { lat: 36.7213, lng: -4.4214, zoom: 13, nombre: 'Málaga' },
+            'murcia': { lat: 37.9922, lng: -1.1307, zoom: 13, nombre: 'Murcia' },
+            'alicante': { lat: 38.3452, lng: -0.4810, zoom: 13, nombre: 'Alicante' },
+            'cordoba': { lat: 37.8882, lng: -4.7794, zoom: 13, nombre: 'Córdoba' },
+            'toledo': { lat: 39.8562, lng: -4.0235, zoom: 13, nombre: 'Toledo' },
+            'palma': { lat: 39.5696, lng: 2.6502, zoom: 13, nombre: 'Palma de Mallorca' },
+            'zaragoza': { lat: 41.6488, lng: -0.8891, zoom: 13, nombre: 'Zaragoza' },
+            'leon': { lat: 42.5987, lng: -5.5794, zoom: 13, nombre: 'León' },
+            'salamanca': { lat: 40.9701, lng: -5.6635, zoom: 13, nombre: 'Salamanca' },
+            'oviedo': { lat: 43.3614, lng: -5.8400, zoom: 13, nombre: 'Oviedo' },
+            'santiago': { lat: 42.8806, lng: -8.5456, zoom: 13, nombre: 'Santiago de Compostela' },
+            'burgos': { lat: 42.3367, lng: -3.6993, zoom: 13, nombre: 'Burgos' },
+            'valladolid': { lat: 41.6523, lng: -4.7245, zoom: 13, nombre: 'Valladolid' },
+            'logroño': { lat: 42.4627, lng: -2.4449, zoom: 13, nombre: 'Logroño' },
+            'mérida': { lat: 38.9184, lng: -6.3736, zoom: 13, nombre: 'Mérida' }
+        };
+
+        // AUTOCOMPLETAR CIUDADES
+        function setupAutoComplete() {
+            const inputCiudad = document.getElementById('ciudad');
+            const suggestionsList = document.getElementById('ciudadSuggestions');
+
+            inputCiudad.addEventListener('input', (e) => {
+                const valor = e.target.value.toLowerCase().trim();
+                
+                if (valor.length < 2) {
+                    suggestionsList.style.display = 'none';
+                    return;
+                }
+
+                const coincidencias = Object.values(UBICACIONES_ESP)
+                    .filter(u => u.nombre.toLowerCase().includes(valor))
+                    .slice(0, 8);
+
+                if (coincidencias.length === 0) {
+                    suggestionsList.style.display = 'none';
+                    return;
+                }
+
+                suggestionsList.innerHTML = coincidencias
+                    .map(u => `<div style="padding: 10px; border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s;" 
+                        class="sugg-item" onclick="document.getElementById('ciudad').value = '${u.nombre}'; document.getElementById('ciudadSuggestions').style.display = 'none';"
+                        onmouseover="this.style.background = '#f0f9ff';" 
+                        onmouseout="this.style.background = 'white';">
+                        📍 ${u.nombre}
+                    </div>`)
+                    .join('');
+                
+                suggestionsList.style.display = 'block';
             });
-        });
 
-        // Manejar el envío del formulario
+            document.addEventListener('click', (e) => {
+                if (e.target.id !== 'ciudad') {
+                    suggestionsList.style.display = 'none';
+                }
+            });
+        }
+
+        // GENERAR ESTRELLAS
+        function generateStars(rating) {
+            rating = parseInt(rating);
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? '★' : '☆';
+            }
+            return stars;
+        }
+
+        // INICIALIZAR MAPA
+        function initializeMap(lat = 40.4168, lng = -3.7038, zoom = 13) {
+            try {
+                console.log('🗺️ Iniciando mapa en:', lat, lng, 'Zoom:', zoom);
+                
+                const mapContainer = document.getElementById('locationMap');
+                if (!mapContainer) {
+                    console.error('❌ Contenedor del mapa no encontrado');
+                    return;
+                }
+
+                // Si el mapa ya existe, destruirlo
+                if (map) {
+                    console.log('🗑️ Destruyendo mapa anterior');
+                    map.remove();
+                    map = null;
+                }
+
+                // Esperar un poco para asegurar limpieza
+                setTimeout(() => {
+                    try {
+                        console.log('✨ Creando nuevo mapa...');
+                        
+                        // Crear mapa
+                        map = L.map('locationMap', {
+                            center: [lat, lng],
+                            zoom: zoom,
+                            zoomControl: true,
+                            dragging: true,
+                            touchZoom: true
+                        });
+                        
+                        // Agregar tiles
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '© OpenStreetMap contributors',
+                            maxZoom: 19
+                        }).addTo(map);
+
+                        // Crear marcador
+                        marker = L.marker([lat, lng], {
+                            draggable: true,
+                            title: 'Tu banco está aquí'
+                        }).addTo(map);
+
+                        marker.bindPopup('Tu banco está aquí<br>Arrastra para ajustar la ubicación');
+
+                        // Eventos del marcador
+                        marker.on('dragend', updateMarkerPosition);
+
+                        // Evento click en el mapa
+                        map.on('click', (e) => {
+                            marker.setLatLng(e.latlng);
+                            updateMarkerPosition();
+                        });
+
+                        // Forzar redimensionamiento
+                        map.invalidateSize(true);
+
+                        console.log('✅ Mapa inicializado correctamente');
+                        updateMarkerPosition();
+                    } catch (innerError) {
+                        console.error('❌ Error al crear mapa:', innerError);
+                    }
+                }, 50);
+                
+            } catch (error) {
+                console.error('❌ Error al inicializar mapa:', error);
+            }
+        }
+
+        function updateMarkerPosition() {
+            if (!marker) return;
+            const lat = marker.getLatLng().lat.toFixed(6);
+            const lng = marker.getLatLng().lng.toFixed(6);
+            
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+            document.getElementById('coordsDisplay').textContent = `${lat}, ${lng}`;
+        }
+
+        // BUSCAR UBICACIÓN Y CENTRAR MAPA
+        function setupLocationSearch() {
+            const btn = document.getElementById('btnBuscarUbicacion');
+            if (!btn) {
+                console.error('Botón de búsqueda no encontrado');
+                return;
+            }
+
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const ciudad = document.getElementById('ciudad').value.toLowerCase().trim();
+                const barrio = document.getElementById('barrio').value.trim();
+                const tipoZona = document.getElementById('tipoZona').value;
+
+                if (!ciudad || !tipoZona) {
+                    alert('❌ Por favor, completa los campos obligatorios');
+                    return;
+                }
+
+                // Buscar ciudad en base de datos
+                const ubicacionBase = UBICACIONES_ESP[ciudad] || Object.values(UBICACIONES_ESP)
+                    .find(u => u.nombre.toLowerCase() === ciudad);
+
+                if (!ubicacionBase) {
+                    alert('❌ Ciudad no encontrada. Por favor, selecciona de la lista de sugerencias');
+                    return;
+                }
+
+                let lat = ubicacionBase.lat;
+                let lng = ubicacionBase.lng;
+                let zoom = 13;
+
+                // Si hay barrio, intentar geolocalizar más específicamente
+                if (barrio) {
+                    try {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+
+                        const searchUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(barrio)},${encodeURIComponent(ubicacionBase.nombre)},Spain&format=json&limit=1`;
+                        const response = await fetch(searchUrl);
+                        const results = await response.json();
+                        
+                        if (results.length > 0) {
+                            lat = parseFloat(results[0].lat);
+                            lng = parseFloat(results[0].lon);
+                            zoom = 15;
+                            console.log(`✅ Ubicación precisada: ${barrio}, ${ubicacionBase.nombre}`);
+                        } else {
+                            console.log('⚠️ No se encontró el barrio específico, usando ciudad');
+                            zoom = 14;
+                        }
+                    } catch (error) {
+                        console.warn('⚠️ Error al buscar barrio específico:', error);
+                        zoom = 14;
+                    }
+                }
+
+                // Centrar mapa en la ubicación
+                initializeMap(lat, lng, zoom);
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-search"></i> Buscar y Centrar Mapa';
+
+                // Scroll al mapa
+                setTimeout(() => {
+                    document.getElementById('locationMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    alert(`✅ ¡Listo! El mapa está centrado en ${ubicacionBase.nombre}${barrio ? ', ' + barrio : ''}.\n\nAhora puedes hacer clic o arrastrar el marcador para ajustar la ubicación exacta del banco.`);
+                }, 300);
+            });
+        }
+
+        // SETUP DE SLIDERS
+        function setupSliders() {
+            const sliderInputs = document.querySelectorAll('.slider-input');
+            
+            sliderInputs.forEach(slider => {
+                const id = slider.id;
+                const valueDisplay = document.getElementById(`val-${id}`);
+                const starsDisplay = document.getElementById(`stars-${id}`);
+                const sliderGroup = slider.closest('.slider-group');
+
+                function updateValue() {
+                    const value = slider.value;
+                    valueDisplay.textContent = value;
+                    starsDisplay.textContent = generateStars(value);
+                    
+                    // Animar el número
+                    valueDisplay.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        valueDisplay.style.transform = 'scale(1)';
+                    }, 200);
+                    
+                    // Animar las estrellas
+                    starsDisplay.style.transform = 'scale(1.15) translateY(-2px)';
+                    setTimeout(() => {
+                        starsDisplay.style.transform = 'scale(1) translateY(0)';
+                    }, 300);
+                    
+                    // Efecto visual en el grupo
+                    sliderGroup.style.borderColor = '#4f46e5';
+                    sliderGroup.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.2)';
+                    setTimeout(() => {
+                        sliderGroup.style.borderColor = '#e0e7ff';
+                        sliderGroup.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.1)';
+                    }, 400);
+                }
+
+                slider.addEventListener('input', updateValue);
+                slider.addEventListener('change', updateValue);
+                slider.addEventListener('touchmove', updateValue);
+                
+                updateValue();
+            });
+        }
+
+        // MANEJO DE FOTOS
+        function setupPhotoHandling() {
+            const photoInput = document.getElementById('benchPhoto');
+            const photoPreview = document.getElementById('photoPreview');
+            const previewImage = document.getElementById('previewImage');
+            const removePhotoBtn = document.getElementById('removePhotoBtn');
+            const photoError = document.getElementById('photoError');
+
+            photoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                
+                if (!file) {
+                    selectedPhotoFile = null;
+                    photoPreview.style.display = 'none';
+                    photoError.style.display = 'none';
+                    return;
+                }
+
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    photoError.textContent = '❌ Formato no permitido. Usa JPG, PNG, WebP o GIF';
+                    photoError.style.display = 'block';
+                    photoInput.value = '';
+                    selectedPhotoFile = null;
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    photoError.textContent = '❌ Imagen muy grande. Máximo 5MB';
+                    photoError.style.display = 'block';
+                    photoInput.value = '';
+                    selectedPhotoFile = null;
+                    return;
+                }
+
+                selectedPhotoFile = file;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImage.src = event.target.result;
+                    photoPreview.style.display = 'block';
+                    photoError.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            });
+
+            removePhotoBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                selectedPhotoFile = null;
+                photoInput.value = '';
+                photoPreview.style.display = 'none';
+                photoError.style.display = 'none';
+            });
+        }
+
+        // INICIALIZACIÓN GENERAL
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Cargado - Inicializando formulario');
+            setupAutoComplete();
+            setupSliders();
+            setupPhotoHandling();
+            setupLocationSearch();
+            initializeMap(40.4168, -3.7038, 13);
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    
+                    console.log('📍 GPS detectado:', lat, lng);
+                    
+                    if (map && marker) {
+                        marker.setLatLng([lat, lng]);
+                        map.setView([lat, lng], 15);
+                        updateMarkerPosition();
+                    }
+                }, (error) => {
+                    console.warn('⚠️ GPS no disponible:', error.message);
+                });
+            }
+        });
+    </script>
+
+    <!-- Módulo de Firebase -->
+    <script type="module">
+        import { saveBench, uploadBenchPhoto, updateBench } from '../js/database.js';
+
         const form = document.getElementById('addBenchForm');
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true;
-            btn.innerHTML = "Guardando...";
+            const name = document.getElementById('benchName').value.trim();
+            
+            if (!name) {
+                alert('❌ Por favor, ingresa el nombre del banco');
+                return;
+            }
 
-            const benchData = {
-                nombre: document.getElementById('benchName').value,
-                ubicacion_desc: document.getElementById('benchDesc').value,
-                vistas: parseInt(document.getElementById('vistas').value),
-                privacidad: parseInt(document.getElementById('privacidad').value),
-                comodidad: parseInt(document.getElementById('comodidad').value),
-                atmosfera: 4, // Valor por defecto para el prototipo
-                lat: parseFloat(document.getElementById('lat').value),
-                lng: parseFloat(document.getElementById('lng').value),
-                etiquetas: ["Nuevo"]
-            };
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
             try {
-                await saveBench(benchData);
-                alert("¡Banco guardado con éxito! Ya aparece en la comunidad Benchify.");
-                window.location.href = "map.html";
+                const benchData = {
+                    nombre: name,
+                    descripcion: document.getElementById('benchDesc').value.trim(),
+                    vistas: parseInt(document.getElementById('vistas').value),
+                    privacidad: parseInt(document.getElementById('privacidad').value),
+                    comodidad: parseInt(document.getElementById('comodidad').value),
+                    atmosfera: parseInt(document.getElementById('atmosfera').value),
+                    lat: parseFloat(document.getElementById('lat').value),
+                    lng: parseFloat(document.getElementById('lng').value),
+                    ciudad: document.getElementById('ciudad').value,
+                    barrio: document.getElementById('barrio').value,
+                    zona: document.getElementById('tipoZona').value,
+                    etiquetas: ['Nuevo'],
+                    fotoURL: null
+                };
+
+                const benchId = await saveBench(benchData);
+                console.log('✅ Banco creado:', benchId);
+
+                if (window.selectedPhotoFile) {
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo foto...';
+                    const fotoURL = await uploadBenchPhoto(window.selectedPhotoFile, benchId);
+                    
+                    if (fotoURL) {
+                        await updateBench(benchId, { fotoURL: fotoURL });
+                        console.log('✅ Foto guardada');
+                    }
+                }
+
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Guardado!';
+                setTimeout(() => {
+                    alert(`✅ ¡Banco "${name}" publicado con éxito!\n\nYa aparece en el mapa para que otros usuarios lo descubran.`);
+                    window.location.href = 'map.html';
+                }, 500);
+
             } catch (error) {
-                alert("Error al guardar: " + error.message);
+                console.error('❌ Error:', error);
+                alert('❌ Error al guardar: ' + error.message);
                 btn.disabled = false;
-                btn.innerHTML = "Publicar Banco";
+                btn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Publicar Banco';
             }
         });
     </script>

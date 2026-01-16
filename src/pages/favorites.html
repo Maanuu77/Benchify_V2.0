@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Favoritos - Benchify</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/favorites.css">
+</head>
+<body>
+
+    <!-- NAVEGACIÓN -->
+    <nav>
+        <div class="container">
+            <a href="../../index.html" class="logo">
+                <i class="fas fa-park"></i>
+                Benchify
+            </a>
+            <a href="map.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Mapa
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>❤️ Mis Bancos Favoritos</h1>
+                <p>Tus lugares especiales guardados para futuras visitas</p>
+            </div>
+            <div class="header-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="searchFavorites" 
+                        placeholder="Buscar favoritos..."
+                        aria-label="Buscar en favoritos"
+                    >
+                </div>
+                <select id="sortFavorites" class="sort-select" aria-label="Ordenar favoritos">
+                    <option value="newest">Más recientes</option>
+                    <option value="oldest">Más antiguos</option>
+                    <option value="name">Nombre (A-Z)</option>
+                    <option value="rating">Mejor calificación</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="stats-bar">
+            <div class="stat">
+                <i class="fas fa-heart"></i>
+                <div class="stat-content">
+                    <h3>Total Favoritos</h3>
+                    <p id="totalFavorites">0</p>
+                </div>
+            </div>
+            <div class="stat">
+                <i class="fas fa-star"></i>
+                <div class="stat-content">
+                    <h3>Calificación Promedio</h3>
+                    <p id="averageRating">0.0</p>
+                </div>
+            </div>
+            <div class="stat">
+                <i class="fas fa-map-pin"></i>
+                <div class="stat-content">
+                    <h3>Ubicaciones Únicas</h3>
+                    <p id="uniqueLocations">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE FAVORITOS -->
+        <div id="favoritesContainer" class="favorites-container">
+            <!-- Los favoritos se cargarán aquí mediante JavaScript -->
+        </div>
+
+        <!-- ESTADO VACÍO -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h2>Aún no tienes favoritos</h2>
+            <p>Comienza a explorar el mapa y marca tus bancos favoritos para que aparezcan aquí.</p>
+            <a href="map.html" class="empty-state-button">
+                <i class="fas fa-map"></i> Ir al Mapa Interactivo
+            </a>
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Datos de ejemplo de favoritos (en producción vendrían de una base de datos)
+        const exampleFavorites = [
+            {
+                id: 1,
+                name: 'Banco Central Park',
+                location: 'Centro, Ciudad',
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1511531142514-b4b00a1b9d00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                tags: ['Sombra', 'Cerca agua'],
+                description: 'Ubicación perfecta con vistas al agua. Ideal para parejas.',
+                addedDate: new Date('2024-01-10')
+            },
+            {
+                id: 2,
+                name: 'Banco Riverside',
+                location: 'Orilla del Río, Ciudad',
+                rating: 4.6,
+                image: 'https://images.unsplash.com/photo-1502184612684-87efbd9451b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                tags: ['Vistas', 'Tranquilo'],
+                description: 'Hermoso banco frente al río con excelentes vistas.',
+                addedDate: new Date('2024-01-05')
+            },
+            {
+                id: 3,
+                name: 'Banco Botánico',
+                location: 'Parque Botánico, Ciudad',
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                tags: ['Naturaleza', 'Fotografías'],
+                description: 'Rodeado de flora exótica. Perfecto para fotógrafos.',
+                addedDate: new Date('2024-01-01')
+            }
+        ];
+
+        // Cargar favoritos desde localStorage
+        function loadFavorites() {
+            const stored = localStorage.getItem('benchifyFavorites');
+            return stored ? JSON.parse(stored) : exampleFavorites;
+        }
+
+        // Guardar favoritos en localStorage
+        function saveFavorites(favorites) {
+            localStorage.setItem('benchifyFavorites', JSON.stringify(favorites));
+        }
+
+        // Renderizar favoritos
+        function renderFavorites() {
+            let favorites = loadFavorites();
+            const container = document.getElementById('favoritesContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            // Obtener valores de búsqueda y ordenamiento
+            const searchTerm = document.getElementById('searchFavorites').value.toLowerCase();
+            const sortBy = document.getElementById('sortFavorites').value;
+
+            // Filtrar por búsqueda
+            if (searchTerm) {
+                favorites = favorites.filter(fav => 
+                    fav.name.toLowerCase().includes(searchTerm) ||
+                    fav.location.toLowerCase().includes(searchTerm) ||
+                    fav.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Ordenar
+            switch(sortBy) {
+                case 'newest':
+                    favorites.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
+                    break;
+                case 'oldest':
+                    favorites.sort((a, b) => new Date(a.addedDate) - new Date(b.addedDate));
+                    break;
+                case 'name':
+                    favorites.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'rating':
+                    favorites.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+
+            // Mostrar estado vacío si no hay favoritos
+            if (favorites.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'flex';
+                updateStats([]);
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            // Renderizar tarjetas
+            container.innerHTML = favorites.map(fav => `
+                <div class="favorite-card" data-id="${fav.id}">
+                    <div class="favorite-card-image">
+                        <img src="${fav.image}" alt="${fav.name}">
+                        <div class="favorite-card-rating">
+                            <i class="fas fa-star"></i>
+                            <span>${fav.rating}</span>
+                        </div>
+                        <button class="favorite-card-favorite-btn" onclick="removeFavorite(${fav.id})" title="Eliminar de favoritos">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="favorite-card-content">
+                        <h3 class="favorite-card-title">${fav.name}</h3>
+                        <div class="favorite-card-location">
+                            <i class="fas fa-map-pin"></i>
+                            <span>${fav.location}</span>
+                        </div>
+                        <div class="favorite-card-tags">
+                            ${fav.tags.map((tag, idx) => {
+                                const colors = ['tag-green', 'tag-blue', 'tag-yellow', 'tag-purple'];
+                                return `<span class="tag ${colors[idx % colors.length]}">${tag}</span>`;
+                            }).join('')}
+                        </div>
+                        <p class="favorite-card-description">${fav.description}</p>
+                        <div class="favorite-card-actions">
+                            <a href="bench-card.html?id=${fav.id}" class="favorite-card-button">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                            <button class="favorite-card-remove-btn" onclick="removeFavorite(${fav.id})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateStats(favorites);
+        }
+
+        // Actualizar estadísticas
+        function updateStats(favorites) {
+            const allFavorites = loadFavorites();
+            document.getElementById('totalFavorites').textContent = favorites.length || allFavorites.length;
+            
+            if (favorites.length > 0) {
+                const avgRating = (favorites.reduce((sum, fav) => sum + fav.rating, 0) / favorites.length).toFixed(1);
+                document.getElementById('averageRating').textContent = avgRating;
+                
+                const locations = new Set(favorites.map(fav => fav.location));
+                document.getElementById('uniqueLocations').textContent = locations.size;
+            } else {
+                document.getElementById('averageRating').textContent = '0.0';
+                document.getElementById('uniqueLocations').textContent = '0';
+            }
+        }
+
+        // Eliminar favorito
+        function removeFavorite(id) {
+            if (confirm('¿Deseas eliminar este banco de favoritos?')) {
+                let favorites = loadFavorites();
+                favorites = favorites.filter(fav => fav.id !== id);
+                saveFavorites(favorites);
+                renderFavorites();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchFavorites').addEventListener('input', renderFavorites);
+        document.getElementById('sortFavorites').addEventListener('change', renderFavorites);
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', renderFavorites);
+    </script>
+</body>
+</html>
