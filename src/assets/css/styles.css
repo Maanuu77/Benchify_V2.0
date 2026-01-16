@@ -1,50 +1,87 @@
 /* * BENCHIFY - GLOBAL STYLES
  * Fuente: Inter (Google Fonts)
  * Framework: Tailwind CSS (Utility classes) + Custom Overrides
+ * 
+ * Estructura:
+ * 1. Configuración Base
+ * 2. Componentes del Mapa
+ * 3. Tarjetas y Contenedores
+ * 4. Formularios y Entrada
+ * 5. Animaciones y Transiciones
+ * 6. Responsivo y Utilities
  */
 
 /* =========================================
-   1. CONFIGURACIÓN BASE Y FUENTES
+   1. CONFIGURACIÓN BASE Y VARIABLES
    ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #16a34a; /* Tailwind Green-600 */
-    --primary-hover: #15803d; /* Tailwind Green-700 */
-    --text-dark: #111827;
-    --text-light: #6b7280;
-    --romantic-overlay: rgba(0, 0, 0, 0.4); /* Oscurecimiento para textos sobre fotos */
+    --primary-color: #16a34a;           /* Verde principal */
+    --primary-hover: #15803d;           /* Verde hover */
+    --primary-light: #d1fae5;           /* Verde claro */
+    --primary-bg: #f0fdf4;              /* Fondo verde muy claro */
+    
+    --text-dark: #111827;               /* Gris oscuro */
+    --text-light: #6b7280;              /* Gris medio */
+    --text-lighter: #9ca3af;            /* Gris claro */
+    
+    --border-color: #e5e7eb;            /* Borde gris */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f9fafb; /* Gray-50 */
+    background-color: #f9fafb;
     color: var(--text-dark);
-    overflow-x: hidden; /* Evita scroll horizontal indeseado en móviles */
+    overflow-x: hidden;
 }
 
 /* =========================================
-   2. COMPONENTES DE MAPA (CRUCIAL PARA LA APP)
+   2. COMPONENTES DEL MAPA
    ========================================= */
 
-/* * El contenedor del mapa necesita una altura explícita para renderizarse.
- * Esto es obligatorio para Google Maps o Leaflet.
- */
-#map-container, #map {
+#map {
     width: 100%;
     height: 100%;
-    min-height: 500px; /* Altura mínima para asegurar visibilidad */
-    border-radius: 0.75rem; /* Rounded-xl */
+    min-height: 500px;
+    border-radius: 0.75rem;
     z-index: 1;
 }
 
-/* Ajustes para los popups (globos) del mapa */
+#map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    border-radius: 0.75rem;
+}
+
+/* Popups del mapa */
 .leaflet-popup-content-wrapper {
     border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    font-family: 'Inter', sans-serif;
+    box-shadow: var(--shadow-md);
+    font-family: inherit;
+    border: 2px solid var(--primary-color);
+    background: white;
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    width: 100% !important;
 }
 
 .leaflet-popup-content h3 {
@@ -53,92 +90,409 @@ body {
     margin-bottom: 5px;
 }
 
-/* =========================================
-   3. ESTILOS DE HERO (PANTALLA PRINCIPAL)
-   ========================================= */
+.leaflet-popup-tip {
+    background: white;
+    border-top-color: var(--primary-color);
+}
 
-/* * Clase para la imagen de fondo principal.
- * Reemplaza el estilo inline del index.html para mantener el código limpio.
- */
-.hero-bg {
-    background-image: linear-gradient(var(--romantic-overlay), var(--romantic-overlay)), 
-                      url('resources/img/bench-sunset.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Efecto Parallax "Romántico" */
-    height: 100vh; /* Ocupa toda la pantalla */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.leaflet-popup-close-button {
+    color: var(--text-light);
+}
+
+/* Pines personalizados */
+.custom-pin {
+    animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.custom-pin:hover {
+    filter: drop-shadow(0 0 5px rgba(22, 163, 74, 0.6));
+}
+
+/* Controles del zoom */
+.leaflet-control-zoom {
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.leaflet-control-zoom a {
+    background-color: white;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+}
+
+.leaflet-control-zoom a:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-hover);
+}
+
+.leaflet-control-zoom a:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.leaflet-control-zoom a:last-child {
+    border-radius: 0 0 8px 8px;
 }
 
 /* =========================================
-   4. TARJETAS DE BANCOS (BENCH CARDS)
+   3. TARJETAS Y CONTENEDORES
    ========================================= */
 
-.bench-card {
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
     transition: all 0.3s ease-in-out;
     border: 1px solid transparent;
 }
 
-.bench-card:hover {
-    transform: translateY(-5px); /* Pequeña elevación al pasar el mouse */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    border-color: #d1fae5; /* Green-100 */
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
 }
 
-/* Icono de favoritos (corazón) animado */
-.fav-icon {
-    transition: color 0.2s, transform 0.2s;
-    cursor: pointer;
+.feature-card {
+    padding: 24px;
+    text-align: center;
+    border: 1px solid var(--border-color);
 }
 
-.fav-icon:hover {
-    color: #ef4444; /* Red-500 */
-    transform: scale(1.1);
+.feature-card:hover {
+    border-color: var(--primary-color);
 }
 
-.fav-icon.active {
-    color: #ef4444;
+.feature-icon {
+    font-size: 2.25rem;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+.bench-card {
+    overflow: hidden;
+    border-radius: 1rem;
+    background: white;
+}
+
+.bench-card-image {
+    height: 192px;
+    overflow: hidden;
+    background-color: #d1d5db;
+    position: relative;
+}
+
+.bench-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.bench-card:hover .bench-card-image img {
+    transform: scale(1.05);
+}
+
+.bench-card-rating {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+
+.bench-card-content {
+    padding: 20px;
+}
+
+.bench-card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.bench-card-location {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.bench-card-tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+
+.badge-green {
+    background-color: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+.badge-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-purple {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+}
+
+.badge-yellow {
+    background-color: #fef3c7;
+    color: #b45309;
 }
 
 /* =========================================
-   5. FORMULARIOS Y BUSCADOR
+   4. FORMULARIOS Y ENTRADA
    ========================================= */
 
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border-color);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.1);
+}
+
 .search-input:focus {
-    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.3); /* Anillo verde suave al escribir */
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
     border-color: var(--primary-color);
 }
 
 /* =========================================
-   6. ANIMACIONES Y UTILIDADES
+   5. BOTONES
    ========================================= */
 
-/* Animación suave de entrada (Fade In) para que la web no cargue "de golpe" */
-.fade-in {
-    animation: fadeIn 0.8s ease-in-out;
+button,
+.btn {
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
 }
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 8px 18px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-bg);
+}
+
+/* =========================================
+   6. ANIMACIONES Y TRANSICIONES
+   ========================================= */
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Scrollbar personalizado (estilo moderno) */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.slide-in-down {
+    animation: slideInDown 0.6s ease-in-out;
+}
+
+.slide-in-up {
+    animation: slideInUp 0.6s ease-in-out;
+}
+
+/* =========================================
+   7. SCROLLBAR PERSONALIZADO
+   ========================================= */
+
 ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* Slate-300 */
+    background: #cbd5e1;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color); 
+    background: var(--primary-color);
+}
+
+/* =========================================
+   8. UTILIDADES Y HELPERS
+   ========================================= */
+
+.text-primary {
+    color: var(--primary-color);
+}
+
+.text-muted {
+    color: var(--text-light);
+}
+
+.bg-light {
+    background-color: var(--primary-bg);
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.rounded-xl {
+    border-radius: 12px;
+}
+
+.shadow-sm {
+    box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+    box-shadow: var(--shadow-md);
+}
+
+.shadow-lg {
+    box-shadow: var(--shadow-lg);
+}
+
+/* =========================================
+   9. RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+    :root {
+        font-size: 14px;
+    }
+    
+    .hidden-mobile {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hidden-desktop {
+        display: none;
+    }
 }

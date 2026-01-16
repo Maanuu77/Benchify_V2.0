@@ -11,7 +11,6 @@ const DEFAULT_ZOOM = 13;
 
 let map; // Variable global del mapa
 
-// 2. Base de Datos Simulada (Mock Data)
 // Esto simula lo que vendría de Firebase Firestore [cite: 7]
 const benchesData = [
     {
@@ -113,8 +112,72 @@ function loadBenches(data) {
     });
 }
 
-// 5. Autoejecución al cargar el DOM
+// 5. Sistema de Filtros
+function applyFilters() {
+    const viewsFilter = document.querySelector('input[type="range"]')?.value || 1;
+    const privacyFilter = document.querySelector('select')?.value || 'Cualquiera';
+    
+    // Limpiar todos los marcadores
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Filtrar bancos según criterios
+    const filtered = benchesData.filter(bench => {
+        const meetsViews = bench.ratings.views >= parseInt(viewsFilter);
+        const meetsPrivacy = privacyFilter === 'Cualquiera' || 
+                            (privacyFilter === 'Muy Privado (Poca gente)' && bench.ratings.privacy >= 4) ||
+                            (privacyFilter === 'Concurrido (Ambiente social)' && bench.ratings.privacy <= 2);
+        return meetsViews && meetsPrivacy;
+    });
+
+    loadBenches(filtered);
+}
+
+// 6. Función para Buscar por Ubicación
+function searchLocation() {
+    const searchInput = document.querySelector('input[placeholder*="Ej:"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                // Aquí puedes integrar un geocodificador como OpenStreetMap Nominatim
+                alert('Búsqueda de ubicación - Integrar con API de geocodificación');
+            }
+        });
+    }
+}
+
+// 7. Función para Añadir Nuevo Banco
+function setupAddBenchButton() {
+    const addBtn = document.querySelector('.fa-plus').parentElement;
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            window.location.href = '../pages/add-bench.html';
+        });
+    }
+}
+
+// 8. Autoejecución al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
     // Intentar iniciar el mapa si existe el elemento #map
     initMap('map');
+    
+    // Configurar botón de filtros
+    const filterBtn = document.querySelector('.mt-10');
+    if (filterBtn) {
+        filterBtn.addEventListener('click', applyFilters);
+    }
+    
+    // Configurar búsqueda de ubicación
+    searchLocation();
+    
+    // Configurar botón de añadir banco
+    setupAddBenchButton();
+    
+    // Re-centrar mapa en ventana responsive
+    window.addEventListener('resize', () => {
+        if (map) map.invalidateSize();
+    });
 });
