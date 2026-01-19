@@ -2,10 +2,12 @@
  * BENCHIFY - LOGICA DE MAPAS
  * Tecnología: Leaflet.js (Alternativa Open Source a Google Maps)
  * Funcionalidad: Renderizado de bancos, pines y popups - CON CONEXIÓN A FIREBASE
+ * Integración: OpenStreetMap (Overpass API) para cargar bancos adicionales
  */
 
-import { getAllBenches, saveBench, getFriendlyErrorMessage } from './database.js';
-import { auth } from './firebase-init.js';
+import { getAllBenches, saveBench, getFriendlyErrorMessage } from '../core/database.js';
+import { auth } from '../core/firebase-init.js';
+import { loadOSMBanks, loadOSMBankMarkers, mergeBankData } from '../osm/osm-banks-loader.js';
 
 // 1. Configuración Inicial
 const DEFAULT_COORDS = [40.416775, -3.703790]; 
@@ -106,9 +108,15 @@ async function initMap(containerId = 'map') {
 
     // Cargar bancos desde Firebase
     benchesData = await loadBenchesFromFirebase();
-    loadBenches(benchesData);
     
-    console.log('✅ Mapa inicializado con', benchesData.length, 'bancos');
+    // Cargar bancos de OpenStreetMap (radio de 3km)
+    const osmBanks = await loadOSMBanks(DEFAULT_COORDS[0], DEFAULT_COORDS[1], 3);
+    
+    // Combinar datos y mostrar todos los bancos
+    const allBanks = mergeBankData(benchesData, osmBanks);
+    loadBenches(allBanks);
+    
+    console.log(`✅ Mapa inicializado con ${benchesData.length} bancos de Benchify y ${osmBanks.length} de OpenStreetMap`);
 }
 
 /**
@@ -121,35 +129,81 @@ function loadBenches(data) {
     }
     
     data.forEach(bench => {
-        const customIcon = L.divIcon({
-            className: 'custom-pin',
-            html: `<i class="fa-solid fa-location-dot text-green-600 text-3xl drop-shadow-md"></i>`,
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
-        });
+        // Diferenciar icono entre bancos de Benchify y bancos de OSM
+        let customIcon;
+        
+        if (bench.isOSMBank) {
+            // Icono para bancos de OpenStreetMap (edificio)
+            customIcon = L.divIcon({
+                className: 'osm-bank-pin',
+                html: `<i class="fa-solid fa-building text-blue-500 text-2xl drop-shadow-md"></i>`,
+                iconSize: [26, 32],
+                iconAnchor: [13, 32]
+            });
+        } else {
+            // Icono para bancos de Benchify (punto de ubicación)
+            customIcon = L.divIcon({
+                className: 'custom-pin',
+                html: `<i class="fa-solid fa-location-dot text-green-600 text-3xl drop-shadow-md"></i>`,
+                iconSize: [30, 42],
+                iconAnchor: [15, 42]
+            });
+        }
 
         const marker = L.marker(bench.location, { icon: customIcon }).addTo(map);
 
-        const popupContent = `
-            <div class="p-2 w-48 font-sans">
-                <img src="${bench.image}" class="w-full h-24 object-cover rounded-lg mb-2" alt="${bench.name}" onerror="this.src='https://images.unsplash.com/photo-1562590206-8d59103e0413?w=300'">
-                <h3 class="font-bold text-sm text-green-700 leading-tight mb-1">${bench.name}</h3>
-                
-                <div class="flex items-center gap-1 text-xs text-yellow-500 mb-2">
-                    <i class="fa-solid fa-eye" title="Vistas"></i> <b>${bench.ratings.vistas || 0}</b>
-                    <span class="text-gray-300">|</span>
-                    <i class="fa-solid fa-user-shield" title="Privacidad"></i> <b>${bench.ratings.privacidad || 0}</b>
-                    <span class="text-gray-300">|</span>
-                    <i class="fa-solid fa-chair" title="Comodidad"></i> <b>${bench.ratings.comodidad || 0}</b>
-                </div>
+        // Popup diferenciado según el tipo de banco
+        let popupContent;
+        
+        if (bench.isOSMBank) {
+            // Popup para bancos de OSM
+            popupContent = `
+                <div class="p-3 w-56 font-sans">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-building text-blue-500 text-lg"></i>
+                        <h3 class="font-bold text-sm text-blue-700">${bench.name}</h3>
+                    </div>
+                    
+                    <div class="text-xs text-gray-600 space-y-1 mb-3">
+                        ${bench.operador ? `<div><strong>Operador:</strong> ${bench.operador}</div>` : ''}
+                        ${bench.direccion ? `<div><strong>Dirección:</strong> ${bench.direccion}</div>` : ''}
+                        ${bench.telefono ? `<div><strong>Teléfono:</strong> <a href="tel:${bench.telefono}" class="text-blue-600">${bench.telefono}</a></div>` : ''}
+                        ${bench.website ? `<div><strong>Web:</strong> <a href="${bench.website}" target="_blank" class="text-blue-600">Visitar</a></div>` : ''}
+                    </div>
 
-                <p class="text-xs text-gray-600 mb-2 line-clamp-2">${bench.description}</p>
-                
-                <a href="bench-card.html?id=${bench.id}" class="block w-full bg-green-600 text-white text-xs text-center py-1 rounded hover:bg-green-700 transition">
-                    Ver Detalles
-                </a>
-            </div>
-        `;
+                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 mb-3 text-xs">
+                        <p class="text-yellow-800"><i class="fa-solid fa-lightbulb text-yellow-600 mr-1"></i><strong>¿Has visitado este banco?</strong></p>
+                        <p class="text-yellow-700 mt-1">¡Sé el primero en dejar una reseña en Benchify!</p>
+                    </div>
+                    
+                    <button onclick="crearResenaBancoOSM('${bench.id}', '${bench.name}', '${bench.location[0]}', '${bench.location[1]}')" class="w-full bg-blue-600 text-white text-xs py-2 rounded font-semibold hover:bg-blue-700 transition">
+                        Crear Reseña
+                    </button>
+                </div>
+            `;
+        } else {
+            // Popup para bancos de Benchify
+            popupContent = `
+                <div class="p-2 w-48 font-sans">
+                    <img src="${bench.image}" class="w-full h-24 object-cover rounded-lg mb-2" alt="${bench.name}" onerror="this.src='https://images.unsplash.com/photo-1562590206-8d59103e0413?w=300'">
+                    <h3 class="font-bold text-sm text-green-700 leading-tight mb-1">${bench.name}</h3>
+                    
+                    <div class="flex items-center gap-1 text-xs text-yellow-500 mb-2">
+                        <i class="fa-solid fa-eye" title="Vistas"></i> <b>${bench.ratings.vistas || 0}</b>
+                        <span class="text-gray-300">|</span>
+                        <i class="fa-solid fa-user-shield" title="Privacidad"></i> <b>${bench.ratings.privacidad || 0}</b>
+                        <span class="text-gray-300">|</span>
+                        <i class="fa-solid fa-chair" title="Comodidad"></i> <b>${bench.ratings.comodidad || 0}</b>
+                    </div>
+
+                    <p class="text-xs text-gray-600 mb-2 line-clamp-2">${bench.description}</p>
+                    
+                    <a href="bench-card.html?id=${bench.id}" class="block w-full bg-green-600 text-white text-xs text-center py-1 rounded hover:bg-green-700 transition">
+                        Ver Detalles
+                    </a>
+                </div>
+            `;
+        }
 
         marker.bindPopup(popupContent);
     });

@@ -136,14 +136,18 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script type="module">
-        import { getAllBenches } from '../js/database.js';
+        import { getAllBenches, saveBench } from '../js/core/database.js';
         
-        // Hacer disponible globalmente
+        // Hacer disponible globalmente para map-loader.js
         window.getAllBenches = getAllBenches;
+        window.saveBench = saveBench;
         
-        // Cargar el inicializador del mapa
-        import('../js/map-loader.js');
+        // Cargar map-loader después de que Firebase esté disponible
+        console.log('✅ Firebase disponible globalmente');
     </script>
+    
+    <!-- Cargar map-loader después de que el módulo esté listo -->
+    <script src="../js/map/map-loader.js" defer></script>
 
 </body>
 </html>

@@ -3,8 +3,9 @@
  * Conecta el formulario add-bench.html con la base de datos Firestore
  */
 
-import { saveBench, uploadBenchPhoto, getFriendlyErrorMessage } from '../js/database.js';
-import { auth } from '../js/firebase-init.js';
+import { saveBench, uploadBenchPhoto, getFriendlyErrorMessage } from '../core/database.js';
+import { auth } from '../core/firebase-init.js';
+import { initOSMBankPreFill } from '../osm/osm-bank-prefill.js';
 
 /**
  * Obtener datos del formulario

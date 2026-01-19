@@ -15,7 +15,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { db, auth, storage } from "./firebase-init.js";
 
-// Firebase inicializado en `src/js/firebase-init.js` y exportado como `db`, `auth`, `storage`.
+// Firebase inicializado en `./firebase-init.js` y exportado como `db`, `auth`, `storage`.
 
 /**
  * 3. FUNCIONES DE DATOS (CRUD)
@@ -34,15 +34,14 @@ export const saveBench = async (benchData) => {
                 lat: benchData.lat,
                 lng: benchData.lng
             },
-            // Sistema de Ranking detallado en la documentación [cite: 56, 57, 58, 59, 84, 86, 87, 88]
             ratings: {
                 vistas: benchData.vistas || 0,
                 privacidad: benchData.privacidad || 0,
                 comodidad: benchData.comodidad || 0,
                 atmosfera: benchData.atmosfera || 0
             },
-            fotoURL: benchData.fotoURL || null, // URL de la foto en Firebase Storage
-            etiquetas: benchData.etiquetas || [], // Ej: "Perfecto para pedida" [cite: 55, 89]
+            fotoURL: benchData.fotoURL || null,
+            etiquetas: benchData.etiquetas || [],
             userId: auth.currentUser ? auth.currentUser.uid : "anonimo",
             fecha_creacion: serverTimestamp()
         });
@@ -56,7 +55,7 @@ export const saveBench = async (benchData) => {
 };
 
 /**
- * Obtiene la lista de todos los bancos para renderizar los "pines" en el mapa [cite: 70]
+ * Obtiene la lista de todos los bancos para renderizar los "pines" en el mapa
  */
 export const getAllBenches = async () => {
     try {
