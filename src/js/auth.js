@@ -3,29 +3,13 @@
  * Basado en Firebase Auth (v10.7.1)
  */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    signOut, 
-    onAuthStateChanged,
-    createUserWithEmailAndPassword 
+        signInWithEmailAndPassword, 
+        signOut, 
+        onAuthStateChanged,
+        createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-// 1. Configuración de tu proyecto (Extraída de tu consola de Firebase)
-const firebaseConfig = {
-  apiKey: "AIzaSyA4AAnIeIWg1cmXMnXtqeZMsQ_YyQNB0HI",
-  authDomain: "benchify-86edd.firebaseapp.com",
-  projectId: "benchify-86edd",
-  storageBucket: "benchify-86edd.firebasestorage.app",
-  messagingSenderId: "809519268011",
-  appId: "1:809519268011:web:aca914994685a23eb437ee",
-  measurementId: "G-72HS3F2N4R"
-};
-
-// 2. Inicializar Firebase y Auth
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth } from "./firebase-init.js";
 
 /**
  * Función para registrar nuevos usuarios (Standard, Fotógrafo o Ayuntamiento)

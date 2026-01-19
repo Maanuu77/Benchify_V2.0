@@ -13,6 +13,46 @@
     
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="../assets/css/map.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+        
+        body {
+            overflow: hidden;
+        }
+        
+        nav {
+            height: 64px;
+            flex-shrink: 0;
+        }
+        
+        main {
+            height: calc(100vh - 64px);
+            display: flex;
+            width: 100%;
+        }
+        
+        section {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #e5e7eb;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 overflow-hidden">
 
@@ -83,7 +123,7 @@
         </aside>
 
         <section class="flex-grow relative">
-            <div id="map"></div>
+            <div id="map" style="min-height: calc(100vh - 64px); height: 100%;"></div>
             
             <button class="add-bench-button">
                 <i class="fa-solid fa-plus"></i>
@@ -95,7 +135,15 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <script src="../js/maps.js"></script>
+    <script type="module">
+        import { getAllBenches } from '../js/database.js';
+        
+        // Hacer disponible globalmente
+        window.getAllBenches = getAllBenches;
+        
+        // Cargar el inicializador del mapa
+        import('../js/map-loader.js');
+    </script>
 
 </body>
 </html>

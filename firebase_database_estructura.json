@@ -1,0 +1,175 @@
+{
+  "Bancos": {
+    "banco_001": {
+      "nombre": "Banco Central Plaza Mayor",
+      "descripcion": "Banco histórico ubicado en la plaza principal. Ideal para parejas y amigos. Excelente privacidad y ambiente relajado.",
+      "coordenadas": {
+        "lat": 40.415363,
+        "lng": -3.707398
+      },
+      "ratings": {
+        "vistas": 5,
+        "privacidad": 4,
+        "comodidad": 4,
+        "atmosfera": 5
+      },
+      "fotoURL": "",
+      "etiquetas": [
+        "Perfecto para pedida",
+        "Romántico",
+        "Histórico"
+      ],
+      "userId": "user_123",
+      "fecha_creacion": "2024-01-15T10:30:00Z",
+      "fecha_actualizacion": "2024-01-15T10:30:00Z"
+    },
+    "banco_002": {
+      "nombre": "Banco Retiro Parque",
+      "descripcion": "Banco en el hermoso Parque del Retiro. Rodeado de naturaleza, perfecta para descansar y leer.",
+      "coordenadas": {
+        "lat": 40.411389,
+        "lng": -3.694278
+      },
+      "ratings": {
+        "vistas": 3,
+        "privacidad": 3,
+        "comodidad": 5,
+        "atmosfera": 4
+      },
+      "fotoURL": "",
+      "etiquetas": [
+        "Naturaleza",
+        "Tranquilo",
+        "Zona verde"
+      ],
+      "userId": "user_456",
+      "fecha_creacion": "2024-01-14T14:20:00Z",
+      "fecha_actualizacion": "2024-01-14T14:20:00Z"
+    },
+    "banco_003": {
+      "nombre": "Banco Social Malasaña",
+      "descripcion": "Banco popular en el barrio alternativo. Mucho ambiente y vida social. Perfecto para conocer gente.",
+      "coordenadas": {
+        "lat": 40.424556,
+        "lng": -3.701347
+      },
+      "ratings": {
+        "vistas": 5,
+        "privacidad": 1,
+        "comodidad": 3,
+        "atmosfera": 5
+      },
+      "fotoURL": "",
+      "etiquetas": [
+        "Concurrido",
+        "Ambiente social",
+        "Vida nocturna"
+      ],
+      "userId": "user_789",
+      "fecha_creacion": "2024-01-13T18:45:00Z",
+      "fecha_actualizacion": "2024-01-13T18:45:00Z"
+    },
+    "banco_004": {
+      "nombre": "Banco Discreción Biblioteca Nacional",
+      "descripcion": "Banco tranquilo y privado frente a la Biblioteca. Excelente para momentos especiales e íntimos.",
+      "coordenadas": {
+        "lat": 40.418833,
+        "lng": -3.682722
+      },
+      "ratings": {
+        "vistas": 2,
+        "privacidad": 5,
+        "comodidad": 4,
+        "atmosfera": 3
+      },
+      "fotoURL": "",
+      "etiquetas": [
+        "Muy privado",
+        "Íntimo",
+        "Elegante"
+      ],
+      "userId": "user_abc",
+      "fecha_creacion": "2024-01-12T12:00:00Z",
+      "fecha_actualizacion": "2024-01-12T12:00:00Z"
+    },
+    "banco_005": {
+      "nombre": "Banco Gourmet La Latina",
+      "descripcion": "Banco con vista a restaurantes y bares. Perfecto para disfrutar del ambiente gastronómico.",
+      "coordenadas": {
+        "lat": 40.405556,
+        "lng": -3.703889
+      },
+      "ratings": {
+        "vistas": 4,
+        "privacidad": 2,
+        "comodidad": 4,
+        "atmosfera": 4
+      },
+      "fotoURL": "",
+      "etiquetas": [
+        "Gastronomía",
+        "Centro",
+        "Ambiente urbano"
+      ],
+      "userId": "user_def",
+      "fecha_creacion": "2024-01-11T09:30:00Z",
+      "fecha_actualizacion": "2024-01-11T09:30:00Z"
+    }
+  },
+  "users": {
+    "user_123": {
+      "email": "juan@example.com",
+      "nombre": "Juan García",
+      "tipo_usuario": "Standard",
+      "favorites": [
+        "banco_001",
+        "banco_003"
+      ],
+      "fecha_registro": "2024-01-10T08:00:00Z",
+      "bio": "Amante de los espacios al aire libre"
+    },
+    "user_456": {
+      "email": "maria@example.com",
+      "nombre": "María López",
+      "tipo_usuario": "Fotógrafo",
+      "favorites": [
+        "banco_002",
+        "banco_004"
+      ],
+      "fecha_registro": "2024-01-09T10:00:00Z",
+      "bio": "Fotógrafa profesional documentando lugares especiales"
+    },
+    "user_789": {
+      "email": "carlos@example.com",
+      "nombre": "Carlos Rodríguez",
+      "tipo_usuario": "Standard",
+      "favorites": [
+        "banco_003",
+        "banco_005"
+      ],
+      "fecha_registro": "2024-01-08T15:00:00Z",
+      "bio": "Explorador de la vida social madrileña"
+    },
+    "user_abc": {
+      "email": "ana@example.com",
+      "nombre": "Ana Martínez",
+      "tipo_usuario": "Ayuntamiento",
+      "favorites": [
+        "banco_004"
+      ],
+      "fecha_registro": "2024-01-07T11:00:00Z",
+      "bio": "Gestora de espacios públicos"
+    },
+    "user_def": {
+      "email": "luis@example.com",
+      "nombre": "Luis Fernández",
+      "tipo_usuario": "Standard",
+      "favorites": [
+        "banco_001",
+        "banco_005"
+      ],
+      "fecha_registro": "2024-01-06T14:30:00Z",
+      "bio": "Amante de la buena comida y compañía"
+    }
+  }
+}

@@ -3,35 +3,19 @@
  * Este archivo conecta la web con Firebase y gestiona los datos de los bancos.
  */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getFirestore, 
     collection, 
     addDoc, 
     getDocs, 
     doc,
     updateDoc,
-    serverTimestamp 
+    serverTimestamp,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { db, auth, storage } from "./firebase-init.js";
 
-// 1. Configuración oficial de tu proyecto Benchify
-const firebaseConfig = {
-  apiKey: "AIzaSyA4AAnIeIWg1cmXMnXtqeZMsQ_YyQNB0HI",
-  authDomain: "benchify-86edd.firebaseapp.com",
-  projectId: "benchify-86edd",
-  storageBucket: "benchify-86edd.firebasestorage.app",
-  messagingSenderId: "809519268011",
-  appId: "1:809519268011:web:aca914994685a23eb437ee",
-  measurementId: "G-72HS3F2N4R"
-};
-
-// 2. Inicialización de los servicios
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);      // Base de datos para Bancos y Reseñas [cite: 7]
-export const auth = getAuth(app);         // Gestión de usuarios [cite: 9]
-export const storage = getStorage(app);   // Almacenamiento de fotos [cite: 9]
+// Firebase inicializado en `src/js/firebase-init.js` y exportado como `db`, `auth`, `storage`.
 
 /**
  * 3. FUNCIONES DE DATOS (CRUD)
@@ -65,8 +49,9 @@ export const saveBench = async (benchData) => {
         console.log("Banco registrado con ID:", docRef.id);
         return docRef.id;
     } catch (error) {
-        console.error("Error al guardar en Firestore:", error);
-        throw error;
+        const msg = `saveBench: error saving banco - ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 };
 
@@ -81,8 +66,9 @@ export const getAllBenches = async () => {
             ...doc.data()
         }));
     } catch (error) {
-        console.error("Error al recuperar bancos:", error);
-        return [];
+        const msg = `getAllBenches: error retrieving bancos - ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 };
 
@@ -118,11 +104,12 @@ export const uploadBenchPhoto = async (file, benchId) => {
         // Obtener URL pública
         const publicURL = await getDownloadURL(storageRef);
         console.log('Foto subida exitosamente:', publicURL);
-        
+
         return publicURL;
     } catch (error) {
-        console.error("Error al subir foto:", error);
-        throw error;
+        const msg = `uploadBenchPhoto: error uploading photo - ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 };
 
@@ -140,9 +127,23 @@ export const updateBench = async (benchId, updates) => {
         });
         console.log("Banco actualizado:", benchId);
     } catch (error) {
-        console.error("Error al actualizar banco:", error);
-        throw error;
+        const msg = `updateBench: error updating banco ${benchId} - ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
+};
+
+/**
+ * Devuelve un mensaje amigable apto para mostrar en UI según el error de Firebase
+ * @param {Error|any} error
+ * @returns {string}
+ */
+export const getFriendlyErrorMessage = (error) => {
+    const text = error?.message || String(error);
+    if (text.includes('permission-denied')) return 'No tienes permisos para realizar esta acción.';
+    if (text.includes('auth/')) return 'Error de autenticación. Por favor inicia sesión.';
+    if (text.includes('network') || text.includes('unavailable')) return 'Error de red. Revisa tu conexión e inténtalo de nuevo.';
+    return 'Se produjo un error inesperado. Inténtalo de nuevo más tarde.';
 };
 
 console.log("Módulo database.js cargado y conectado a Benchify.");

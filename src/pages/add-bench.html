@@ -616,26 +616,21 @@
                 if (window.selectedPhotoFile) {
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo foto...';
                     const fotoURL = await uploadBenchPhoto(window.selectedPhotoFile, benchId);
-                    
-                    if (fotoURL) {
-                        await updateBench(benchId, { fotoURL: fotoURL });
-                        console.log('✅ Foto guardada');
-                    }
+                    await updateBench(benchId, { fotoURL });
+                    alert('✅ Banco agregado exitosamente con foto');
+                } else {
+                    alert('✅ Banco agregado exitosamente');
                 }
-
-                btn.innerHTML = '<i class="fas fa-check"></i> ¡Guardado!';
-                setTimeout(() => {
-                    alert(`✅ ¡Banco "${name}" publicado con éxito!\n\nYa aparece en el mapa para que otros usuarios lo descubran.`);
-                    window.location.href = 'map.html';
-                }, 500);
-
+                window.location.href = 'map.html';
             } catch (error) {
                 console.error('❌ Error:', error);
-                alert('❌ Error al guardar: ' + error.message);
+                alert('❌ Error: ' + (error.message || 'Error desconocido'));
+            } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Publicar Banco';
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar Banco';
             }
         });
     </script>
+
 </body>
 </html>

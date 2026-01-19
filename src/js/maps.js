@@ -1,30 +1,33 @@
 /**
  * BENCHIFY - LOGICA DE MAPAS
  * Tecnología: Leaflet.js (Alternativa Open Source a Google Maps)
- * Funcionalidad: Renderizado de bancos, pines y popups.
+ * Funcionalidad: Renderizado de bancos, pines y popups - CON CONEXIÓN A FIREBASE
  */
 
+import { getAllBenches, saveBench, getFriendlyErrorMessage } from './database.js';
+import { auth } from './firebase-init.js';
+
 // 1. Configuración Inicial
-// Coordenadas centradas en Madrid (puedes cambiarlas a tu ciudad objetivo)
 const DEFAULT_COORDS = [40.416775, -3.703790]; 
 const DEFAULT_ZOOM = 13;
 
 let map; // Variable global del mapa
+let benchesData = [];
 
-// Esto simula lo que vendría de Firebase Firestore [cite: 7]
-const benchesData = [
+// Datos de ejemplo locales (fallback si Firestore no responde)
+const defaultBenchesData = [
     {
         id: "bench_001",
-        name: "Banquito del Atardecer", // [cite: 54]
-        location: [40.418308, -3.682664], // Parque del Retiro aprox
+        name: "Banquito del Atardecer",
+        location: [40.418308, -3.682664],
         description: "Perfecto para ver caer el sol sobre el lago.",
         image: "https://images.unsplash.com/photo-1562590206-8d59103e0413?w=300",
         ratings: {
-            views: 5,      // [cite: 56]
-            privacy: 2,    // [cite: 58]
-            comfort: 4     // [cite: 58]
+            vistas: 5,
+            privacidad: 2,
+            comodidad: 4
         },
-        tags: ["Romántico", "Atardecer"] // [cite: 55]
+        tags: ["Romántico", "Atardecer"]
     },
     {
         id: "bench_002",
@@ -33,51 +36,91 @@ const benchesData = [
         description: "Un banco escondido, ideal para conversaciones privadas.",
         image: "https://images.unsplash.com/photo-1596395359723-5e74c830c29b?w=300",
         ratings: {
-            views: 3,
-            privacy: 5,    // Alta privacidad
-            comfort: 3
+            vistas: 3,
+            privacidad: 5,
+            comodidad: 3
         },
         tags: ["Privacidad", "Silencio"]
     },
     {
         id: "bench_003",
         name: "Mirador del Templo",
-        location: [40.4241, -3.7176], // Templo de Debod
+        location: [40.4241, -3.7176],
         description: "Vistas panorámicas increíbles, pero muy concurrido.",
         image: "https://images.unsplash.com/photo-1555529733-146e499d3d3c?w=300",
         ratings: {
-            views: 5,
-            privacy: 1,
-            comfort: 4
+            vistas: 5,
+            privacidad: 1,
+            comodidad: 4
         },
         tags: ["Turístico", "Fotografía"]
     }
 ];
 
-// 3. Función para Inicializar el Mapa
-function initMap(containerId = 'map') {
-    // Verificar si el contenedor existe en el HTML
-    if (!document.getElementById(containerId)) return;
+/**
+ * 2. Función para Cargar Bancos desde Firebase
+ */
+async function loadBenchesFromFirebase() {
+    try {
+        const benches = await getAllBenches();
+        console.log('✅ Bancos cargados desde Firebase:', benches.length);
+        
+        // Convertir datos de Firestore al formato del mapa
+        return benches.map(bench => ({
+            id: bench.id,
+            name: bench.nombre,
+            location: [bench.coordenadas.lat, bench.coordenadas.lng],
+            description: bench.descripcion,
+            image: bench.fotoURL || 'https://images.unsplash.com/photo-1562590206-8d59103e0413?w=300',
+            ratings: bench.ratings || { vistas: 0, privacidad: 0, comodidad: 0, atmosfera: 0 },
+            tags: bench.etiquetas || [],
+            userId: bench.userId,
+            fecha_creacion: bench.fecha_creacion
+        }));
+    } catch (error) {
+        console.error('❌ Error al cargar bancos:', error.message);
+        console.warn('⚠️ Usando datos de ejemplo por defecto');
+        return defaultBenchesData;
+    }
+}
+
+/**
+ * 3. Función para Inicializar el Mapa
+ */
+async function initMap(containerId = 'map') {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.warn('No se encontró contenedor para el mapa');
+        return;
+    }
 
     // Crear el mapa
     map = L.map(containerId).setView(DEFAULT_COORDS, DEFAULT_ZOOM);
 
-    // Cargar las "Tejas" (Tiles) del mapa (Diseño visual)
-    // Usamos CartoDB Voyager para un diseño limpio y romántico
+    // Cargar tiles del mapa
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
         subdomains: 'abcd',
         maxZoom: 20
     }).addTo(map);
 
-    // Cargar los pines de los bancos
+    // Cargar bancos desde Firebase
+    benchesData = await loadBenchesFromFirebase();
     loadBenches(benchesData);
+    
+    console.log('✅ Mapa inicializado con', benchesData.length, 'bancos');
 }
 
-// 4. Función para Generar Pines y Popups
+/**
+ * 4. Función para Renderizar Pines en el Mapa
+ */
 function loadBenches(data) {
+    if (!data || data.length === 0) {
+        console.warn('⚠️ No hay bancos para mostrar en el mapa');
+        return;
+    }
+    
     data.forEach(bench => {
-        // Crear icono personalizado (opcional)
         const customIcon = L.divIcon({
             className: 'custom-pin',
             html: `<i class="fa-solid fa-location-dot text-green-600 text-3xl drop-shadow-md"></i>`,
@@ -85,19 +128,19 @@ function loadBenches(data) {
             iconAnchor: [15, 42]
         });
 
-        // Crear marcador
         const marker = L.marker(bench.location, { icon: customIcon }).addTo(map);
 
-        // Crear contenido HTML del Popup (Tarjeta pequeña)
         const popupContent = `
             <div class="p-2 w-48 font-sans">
-                <img src="${bench.image}" class="w-full h-24 object-cover rounded-lg mb-2" alt="${bench.name}">
+                <img src="${bench.image}" class="w-full h-24 object-cover rounded-lg mb-2" alt="${bench.name}" onerror="this.src='https://images.unsplash.com/photo-1562590206-8d59103e0413?w=300'">
                 <h3 class="font-bold text-sm text-green-700 leading-tight mb-1">${bench.name}</h3>
                 
                 <div class="flex items-center gap-1 text-xs text-yellow-500 mb-2">
-                    <i class="fa-solid fa-eye" title="Vistas"></i> <b>${bench.ratings.views}</b>
+                    <i class="fa-solid fa-eye" title="Vistas"></i> <b>${bench.ratings.vistas || 0}</b>
                     <span class="text-gray-300">|</span>
-                    <i class="fa-solid fa-user-shield" title="Privacidad"></i> <b>${bench.ratings.privacy}</b>
+                    <i class="fa-solid fa-user-shield" title="Privacidad"></i> <b>${bench.ratings.privacidad || 0}</b>
+                    <span class="text-gray-300">|</span>
+                    <i class="fa-solid fa-chair" title="Comodidad"></i> <b>${bench.ratings.comodidad || 0}</b>
                 </div>
 
                 <p class="text-xs text-gray-600 mb-2 line-clamp-2">${bench.description}</p>
@@ -112,72 +155,84 @@ function loadBenches(data) {
     });
 }
 
-// 5. Sistema de Filtros
+/**
+ * 5. Función para Filtrar Bancos
+ */
 function applyFilters() {
-    const viewsFilter = document.querySelector('input[type="range"]')?.value || 1;
-    const privacyFilter = document.querySelector('select')?.value || 'Cualquiera';
+    const viewsFilter = parseInt(document.querySelector('input.range-input')?.value || 1);
+    const privacyFilter = document.querySelector('select.privacy-select')?.value || 'Cualquiera';
     
-    // Limpiar todos los marcadores
+    // Limpiar marcadores anteriores
     map.eachLayer(layer => {
         if (layer instanceof L.Marker) {
             map.removeLayer(layer);
         }
     });
 
-    // Filtrar bancos según criterios
+    // Aplicar filtros
     const filtered = benchesData.filter(bench => {
-        const meetsViews = bench.ratings.views >= parseInt(viewsFilter);
+        const meetsViews = (bench.ratings.vistas || 0) >= viewsFilter;
         const meetsPrivacy = privacyFilter === 'Cualquiera' || 
-                            (privacyFilter === 'Muy Privado (Poca gente)' && bench.ratings.privacy >= 4) ||
-                            (privacyFilter === 'Concurrido (Ambiente social)' && bench.ratings.privacy <= 2);
+                            (privacyFilter === 'Muy Privado (Poca gente)' && (bench.ratings.privacidad || 0) >= 4) ||
+                            (privacyFilter === 'Concurrido (Ambiente social)' && (bench.ratings.privacidad || 0) <= 2);
         return meetsViews && meetsPrivacy;
     });
 
+    console.log(`🔍 Filtros aplicados: ${filtered.length} bancos encontrados`);
     loadBenches(filtered);
 }
 
-// 6. Función para Buscar por Ubicación
-function searchLocation() {
-    const searchInput = document.querySelector('input[placeholder*="Ej:"]');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                // Aquí puedes integrar un geocodificador como OpenStreetMap Nominatim
-                alert('Búsqueda de ubicación - Integrar con API de geocodificación');
-            }
-        });
-    }
-}
-
-// 7. Función para Añadir Nuevo Banco
-function setupAddBenchButton() {
-    const addBtn = document.querySelector('.fa-plus').parentElement;
-    if (addBtn) {
-        addBtn.addEventListener('click', () => {
-            window.location.href = '../pages/add-bench.html';
-        });
-    }
-}
-
-// 8. Autoejecución al cargar el DOM
-document.addEventListener('DOMContentLoaded', () => {
-    // Intentar iniciar el mapa si existe el elemento #map
-    initMap('map');
+/**
+ * 6. Recargar bancos desde Firebase (para actualizaciones en tiempo real)
+ */
+async function refreshBenches() {
+    console.log('🔄 Recargando bancos...');
     
-    // Configurar botón de filtros
-    const filterBtn = document.querySelector('.mt-10');
+    // Limpiar el mapa
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Recargar datos
+    benchesData = await loadBenchesFromFirebase();
+    loadBenches(benchesData);
+    console.log('✅ Bancos recargados');
+}
+
+/**
+ * 7. Autoejecución
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Inicializando mapa...');
+    
+    // Inicializar mapa
+    await initMap('map');
+    
+    // Configurar filtros
+    const filterBtn = document.querySelector('.apply-filters-btn');
     if (filterBtn) {
         filterBtn.addEventListener('click', applyFilters);
+        console.log('✅ Botón de filtros configurado');
     }
-    
-    // Configurar búsqueda de ubicación
-    searchLocation();
-    
-    // Configurar botón de añadir banco
-    setupAddBenchButton();
-    
-    // Re-centrar mapa en ventana responsive
+
+    // Configurar botón de agregar banco
+    const addBenchBtn = document.querySelector('.add-bench-button');
+    if (addBenchBtn) {
+        addBenchBtn.addEventListener('click', () => {
+            window.location.href = 'add-bench.html';
+        });
+        console.log('✅ Botón de agregar banco configurado');
+    }
+
+    // Reajustar tamaño al redimensionar ventana
     window.addEventListener('resize', () => {
         if (map) map.invalidateSize();
     });
+
+    console.log('✅ Mapa listo');
 });
+
+// Exportar funciones para uso externo
+export { initMap, loadBenches, applyFilters, refreshBenches, loadBenchesFromFirebase };

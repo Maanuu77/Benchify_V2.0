@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Colección principal de Bancos
+    match /Bancos/{benchId} {
+      // Lectura pública: cualquiera puede ver la lista de bancos y sus detalles.
+      // Si quieres restringir la lectura a usuarios autenticados, cambia "if true" por "if request.auth != null".
+      allow read: if true;
+
+      // Solo usuarios autenticados pueden crear bancos.
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+
+      // Solo el creador puede actualizar o borrar su propio banco.
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Subcolección de reseñas por banco
+    match /Bancos/{benchId}/reviews/{reviewId} {
+      // Cualquiera puede leer reseñas.
+      allow read: if true;
+
+      // Solo usuarios autenticados pueden crear reseñas; el campo authorId debe coincidir.
+      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
+
+      // Editar/eliminar reseñas solo por su autor.
+      allow update, delete: if request.auth != null && resource.data.authorId == request.auth.uid;
+    }
+
+    // Documentos de usuario: cada usuario puede leer y escribir su propio documento
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Regla por defecto: negar todo lo demás
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// NOTAS:
+// - Ajusta 'allow read: if true' si deseas que solo usuarios autenticados vean los bancos.
+// - Revisa los nombres de campos ('userId', 'authorId') para que coincidan con tus documentos.
+// - Despliega estas reglas desde la consola de Firebase o usa la CLI (`firebase deploy --only firestore:rules`).

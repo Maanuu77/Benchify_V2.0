@@ -7,22 +7,8 @@
 // 1. CONFIGURACIÓN DE FIREBASE
 // ============================================
 
-// Reemplaza con tus credenciales de Firebase
-const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "tu-proyecto.firebaseapp.com",
-    projectId: "tu-proyecto",
-    storageBucket: "tu-proyecto.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-};
-
-// Inicializar Firebase (descomenta cuando tengas credenciales)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, getDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from "./firebase-init.js";
 
 // ============================================
 // 2. OBTENER BANCOS DESDE FIRESTORE
@@ -34,19 +20,16 @@ const db = getFirestore(app);
  */
 async function loadBenchesFromDatabase() {
     try {
-        // Descomentar cuando uses Firebase:
-        const querySnapshot = await getDocs(collection(db, "benches"));
+        const querySnapshot = await getDocs(collection(db, "Bancos"));
         const benches = [];
         querySnapshot.forEach((doc) => {
         benches.push({ id: doc.id, ...doc.data() });
         });
         return benches;
-        
-        // Por ahora, retorna los datos locales
-        return benchesData;
     } catch (error) {
-        console.error("Error al cargar bancos:", error);
-        return [];
+        const msg = `loadBenchesFromDatabase: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -61,16 +44,12 @@ async function loadBenchesFromDatabase() {
  */
 async function createNewBench(benchData) {
     try {
-        // Descomentar cuando uses Firebase:
-        const docRef = await addDoc(collection(db, "benches"), benchData);
+        const docRef = await addDoc(collection(db, "Bancos"), benchData);
         return docRef.id;
-        
-        // Por ahora, simula la creación local
-        console.log("Nuevo banco creado:", benchData);
-        return "local_" + Date.now();
     } catch (error) {
-        console.error("Error al crear banco:", error);
-        throw error;
+        const msg = `createNewBench: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -85,13 +64,12 @@ async function createNewBench(benchData) {
  */
 async function updateBench(benchId, updates) {
     try {
-        // Descomentar cuando uses Firebase:
-        await updateDoc(doc(db, "benches", benchId), updates);
-        
+        await updateDoc(doc(db, "Bancos", benchId), updates);
         console.log("Banco actualizado:", benchId, updates);
     } catch (error) {
-        console.error("Error al actualizar banco:", error);
-        throw error;
+        const msg = `updateBench: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -105,13 +83,12 @@ async function updateBench(benchId, updates) {
  */
 async function deleteBench(benchId) {
     try {
-        // Descomentar cuando uses Firebase:
-        await deleteDoc(doc(db, "benches", benchId));
-        
+        await deleteDoc(doc(db, "Bancos", benchId));
         console.log("Banco eliminado:", benchId);
     } catch (error) {
-        console.error("Error al eliminar banco:", error);
-        throw error;
+        const msg = `deleteBench: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -126,16 +103,15 @@ async function deleteBench(benchId) {
  */
 async function getBenchById(benchId) {
     try {
-        // Descomentar cuando uses Firebase:
-        const docSnap = await getDoc(doc(db, "benches", benchId));
+        const docSnap = await getDoc(doc(db, "Bancos", benchId));
         if (docSnap.exists()) {
         return { id: docSnap.id, ...docSnap.data() };
         }
-        
         return null;
     } catch (error) {
-        console.error("Error al obtener banco:", error);
-        return null;
+        const msg = `getBenchById: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -174,8 +150,9 @@ async function searchBenches(filters) {
         
         return benches;
     } catch (error) {
-        console.error("Error al buscar bancos:", error);
-        return [];
+        const msg = `searchBenches: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -190,19 +167,18 @@ async function searchBenches(filters) {
  */
 async function addReview(benchId, review) {
     try {
-        // Descomentar cuando uses Firebase:
-        const reviewsRef = collection(db, "benches", benchId, "reviews");
+        const reviewsRef = collection(db, "Bancos", benchId, "reviews");
         await addDoc(reviewsRef, {
         author: review.author,
         rating: review.rating,
         text: review.text,
         timestamp: new Date()
          });
-        
         console.log("Reseña añadida:", review);
     } catch (error) {
-        console.error("Error al añadir reseña:", error);
-        throw error;
+        const msg = `addReview: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -213,19 +189,17 @@ async function addReview(benchId, review) {
  */
 async function getReviews(benchId) {
     try {
-        // Descomentar cuando uses Firebase:
-        const reviewsRef = collection(db, "benches", benchId, "reviews");
+        const reviewsRef = collection(db, "Bancos", benchId, "reviews");
         const querySnapshot = await getDocs(reviewsRef);
         const reviews = [];
         querySnapshot.forEach((doc) => {
         reviews.push({ id: doc.id, ...doc.data() });
         });
         return reviews;
-        
-        return [];
     } catch (error) {
-        console.error("Error al obtener reseñas:", error);
-        return [];
+        const msg = `getReviews: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -240,15 +214,15 @@ async function getReviews(benchId) {
  */
 async function addToFavorites(userId, benchId) {
     try {
-        // Descomentar cuando uses Firebase:
         await updateDoc(doc(db, "users", userId), {
         favorites: arrayUnion(benchId)
         });
-        
+
         localStorage.setItem(`fav_${benchId}`, 'true');
         console.log("Banco añadido a favoritos");
     } catch (error) {
-        console.error("Error al añadir a favoritos:", error);
+        const msg = `addToFavorites: ${error.message || error}`;
+        console.error(msg, error);
     }
 }
 
@@ -259,17 +233,12 @@ async function addToFavorites(userId, benchId) {
  */
 async function getFavorites(userId) {
     try {
-        // Descomentar cuando uses Firebase:
         const userDoc = await getDoc(doc(db, "users", userId));
         return userDoc.data()?.favorites || [];
-        
-        // Por ahora, usa localStorage
-        //return Object.keys(localStorage)
-        //   .filter(key => key.startsWith('fav_'))
-        //    .map(key => key.replace('fav_', ''));
     } catch (error) {
-        console.error("Error al obtener favoritos:", error);
-        return [];
+        const msg = `getFavorites: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
@@ -293,8 +262,9 @@ async function getStatistics() {
             allTags: [...new Set(benches.flatMap(b => b.tags))]
         };
     } catch (error) {
-        console.error("Error al obtener estadísticas:", error);
-        return {};
+        const msg = `getStatistics: ${error.message || error}`;
+        console.error(msg, error);
+        throw new Error(msg);
     }
 }
 
