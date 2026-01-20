@@ -54,9 +54,6 @@ export const saveBench = async (benchData) => {
     }
 };
 
-/**
- * Obtiene la lista de todos los bancos para renderizar los "pines" en el mapa
- */
 export const getAllBenches = async () => {
     try {
         const querySnapshot = await getDocs(collection(db, "Bancos"));
