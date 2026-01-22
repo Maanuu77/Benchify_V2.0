@@ -5,12 +5,14 @@
 
 /* Variables y tipografía */
 :root {
-    --primary-color: #16a34a;
-    --primary-dark: #15803d;
-    --text-dark: #111827;
+    --primary-color: #a78bfa;
+    --primary-dark: #9d7ce6;
+    --primary-light: #ede9fe;
+    --accent-pink: #f472b6;
+    --text-dark: #2d1b4e;
     --text-light: #6b7280;
-    --border-light: #e5e7eb;
-    --bg-light: #f3f4f6;
+    --border-light: #e9d5ff;
+    --bg-light: #faf5ff;
 }
 
 * {
@@ -19,7 +21,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: #f9fafb;
+    background: linear-gradient(135deg, #faf5ff 0%, #f0fdf4 100%);
     min-height: 100vh;
     padding-bottom: 3rem;
 }
@@ -29,12 +31,13 @@ body {
    ======================================== */
 nav {
     background: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(167, 139, 250, 0.12);
     padding: 1rem;
     margin-bottom: 1.5rem;
     position: sticky;
     top: 0;
     z-index: 40;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
 }
 
 nav .container {
@@ -83,10 +86,10 @@ main {
 .form-section {
     background: white;
     padding: 2rem;
-    border-radius: 16px;
+    border-radius: 18px;
     border: 1px solid var(--border-light);
     margin-bottom: 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 15px rgba(167, 139, 250, 0.12);
 }
 
 .form-section h2 {
@@ -127,7 +130,7 @@ main {
     width: 100%;
     padding: 12px 16px;
     border: 2px solid var(--border-light);
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--text-dark);
@@ -142,8 +145,8 @@ main {
 .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15), inset 0 0 0 1px rgba(22, 163, 74, 0.05);
-    background-color: #fafbf9;
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+    background-color: var(--primary-light);
 }
 
 .form-group select {
@@ -377,25 +380,25 @@ input[type="range"]::-moz-range-track {
     font-weight: 700;
     font-size: 1rem;
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.2);
+    box-shadow: 0 8px 20px rgba(167, 139, 250, 0.2);
     font-family: inherit;
     text-decoration: none;
 }
 
 .submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(22, 163, 74, 0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(167, 139, 250, 0.3);
 }
 
 .submit-btn:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .submit-btn:disabled {

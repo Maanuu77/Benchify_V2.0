@@ -166,8 +166,8 @@
 
 .filter-tag-button {
     padding: 6px 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 9999px;
+    border: 1.5px solid rgba(167, 139, 250, 0.3);
+    border-radius: 14px;
     font-size: 0.75rem;
     background: white;
     color: #6b7280;
@@ -177,15 +177,15 @@
 }
 
 .filter-tag-button:hover {
-    border-color: #16a34a;
-    background: white;
-    color: #16a34a;
+    border-color: var(--primary-color);
+    background: rgba(167, 139, 250, 0.1);
+    color: var(--primary-color);
 }
 
 .filter-tag-button.active {
-    background: #16a34a;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     color: white;
-    border-color: #16a34a;
+    border-color: var(--primary-color);
 }
 
 /* Botón de aplicar filtros */
@@ -193,11 +193,27 @@
     width: 100%;
     padding: 12px 16px;
     margin-top: 2.5rem;
-    background: #16a34a;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(167, 139, 250, 0.15);
+}
+
+.apply-filters-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(167, 139, 250, 0.25);
+}
+
+.apply-filters-btn:active {
+    transform: translateY(0);
+}
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
